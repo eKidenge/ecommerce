@@ -84,7 +84,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item gov-dropdown-item" href="{% url 'orders:order_history' %}" style="font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; border-radius: 0;">
+                                    <!-- ✅ FIXED: Changed from 'orders:order_history' to 'orders:history' -->
+                                    <a class="dropdown-item gov-dropdown-item" href="{% url 'orders:history' %}" style="font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; border-radius: 0;">
                                         <i class="fas fa-box me-2" style="color: var(--gov-gold); width: 20px; text-align: center;"></i>ORDERS
                                     </a>
                                 </li>

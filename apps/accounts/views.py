@@ -94,7 +94,7 @@ def user_login(request):
         if form.is_valid():
             username_or_email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            remember_me = form.cleaned_data.get('remember_me', False)  # Add this line
+            remember_me = form.cleaned_data.get('remember_me', False)
             
             # Check if it's an email or username
             if '@' in username_or_email:
@@ -130,7 +130,7 @@ def user_login(request):
                 
                 user.failed_login_attempts = 0
                 user.last_login_ip = request.META.get('REMOTE_ADDR')
-                user.save()
+                user.save(update_fields=['failed_login_attempts', 'last_login_ip'])
                 log_user_activity(user, 'login', 'User logged in', request)
                 
                 messages.success(request, f'Welcome back, {user.full_name}!')
@@ -138,11 +138,22 @@ def user_login(request):
                 next_page = request.GET.get('next')
                 if next_page:
                     return redirect(next_page)
-                return redirect('products:home')
+                
+                # ✅ NEW: Redirect based on user type
+                if user.is_staff or user.user_type == 'admin':
+                    return redirect('dashboard:admin_dashboard')
+                elif user.user_type == 'vendor':
+                    return redirect('dashboard:vendor_dashboard')
+                else:
+                    return redirect('products:home')
             else:
                 # Try to find user to increment attempts
                 try:
-                    user = User.objects.get(username=username)
+                    if '@' in username_or_email:
+                        user = User.objects.get(email=username_or_email)
+                    else:
+                        user = User.objects.get(username=username_or_email)
+                    
                     user.failed_login_attempts += 1
                     if user.failed_login_attempts >= 5:
                         user.lock_account()
@@ -150,11 +161,14 @@ def user_login(request):
                     else:
                         remaining = 5 - user.failed_login_attempts
                         messages.error(request, f'Invalid credentials. {remaining} attempts remaining.')
-                    user.save()
+                    user.save(update_fields=['failed_login_attempts', 'locked_until', 'is_active'])
                 except User.DoesNotExist:
                     messages.error(request, 'Invalid credentials.')
         else:
-            messages.error(request, 'Please correct the errors below.')
+            # Display form errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
     else:
         form = UserLoginForm()
     
