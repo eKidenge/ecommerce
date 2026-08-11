@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     # Third party apps
     'crispy_forms',
     'crispy_bootstrap5',
-    # 'storages',  # REMOVED - Not needed for basic deployment
     
     # Custom apps
     'apps.accounts',
@@ -106,7 +105,9 @@ TIME_ZONE = 'Africa/Nairobi'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ============================================
+# STATIC FILES
+# ============================================
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -114,10 +115,26 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
+# ============================================
+# MEDIA FILES - FIX FOR RENDER
+# ============================================
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
+# Use Render's persistent disk if available
+if 'RENDER' in os.environ:
+    # For Render with disk mounted
+    MEDIA_ROOT = '/opt/render/project/src/media'
+    print(f"📁 Using Render disk for media: {MEDIA_ROOT}", file=sys.stderr)
+else:
+    # Local development
+    MEDIA_ROOT = BASE_DIR / 'media'
+
+# Ensure media directory exists
+if not os.path.exists(MEDIA_ROOT):
+    os.makedirs(MEDIA_ROOT)
+    print(f"📁 Created media directory: {MEDIA_ROOT}", file=sys.stderr)
+
+# ============================================
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -239,3 +256,4 @@ if not os.path.exists(BASE_DIR / 'logs'):
 if 'RENDER' in os.environ:
     print(f"🚀 Running on Render with DEBUG={DEBUG}", file=sys.stderr)
     print(f"🌐 Site URL: {BASE_URL}", file=sys.stderr)
+    print(f"📁 Media root: {MEDIA_ROOT}", file=sys.stderr)

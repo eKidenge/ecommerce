@@ -21,6 +21,12 @@ urlpatterns = [
     path('sitemap.xml', TemplateView.as_view(template_name='sitemap.xml', content_type='application/xml')),
 ]
 
+# ============================================
+# SERVE MEDIA FILES - CRITICAL FOR UPLOADED IMAGES
+# ============================================
+# Always serve media files (works for both development and production)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Serve static files only in development (production uses Whitenoise)
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
