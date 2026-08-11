@@ -1,6 +1,5 @@
 """
 Django settings for ecommerce project.
-Production settings for Render deployment
 """
 
 from pathlib import Path
@@ -19,12 +18,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-b7d-s7bnzew-(@vdh0yyq
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ALLOWED HOSTS - Updated for Render
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'ecommerce-qdwv.onrender.com',
-    '.onrender.com',  # Allow all Render subdomains
-]
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,ecommerce-qdwv.onrender.com,.onrender.com').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -38,7 +32,7 @@ INSTALLED_APPS = [
     # Third party apps
     'crispy_forms',
     'crispy_bootstrap5',
-    'storages',  # For AWS S3 if needed
+    # 'storages',  # REMOVED - Not needed for basic deployment
     
     # Custom apps
     'apps.accounts',
@@ -54,7 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-# Database Configuration - Updated for Render PostgreSQL
+# Database - Maintained as you had it
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -96,14 +90,7 @@ DATABASES = {
 # Use PostgreSQL if DATABASE_URL is set (for Render)
 DATABASE_URL = config('DATABASE_URL', default='')
 if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
-    print(f"✅ Using PostgreSQL database from DATABASE_URL", file=sys.stderr)
-else:
-    print("⚠️ Using SQLite database (development only)", file=sys.stderr)
+    DATABASES['default'] = dj_database_url.config(default=DATABASE_URL)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -115,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Africa/Nairobi'  # Kenya timezone
+TIME_ZONE = 'Africa/Nairobi'
 USE_I18N = True
 USE_TZ = True
 
@@ -146,17 +133,8 @@ LOGOUT_REDIRECT_URL = 'products:home'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# Email settings for production
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@ecommerce.com')
+# Email settings (for development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Stripe Settings
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='')
@@ -171,36 +149,24 @@ MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='')
 MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT', default='sandbox')
 BASE_URL = config('BASE_URL', default='https://ecommerce-qdwv.onrender.com')
 
-# Security Settings for Production
+# Security Settings (for production)
 if not DEBUG:
-    # HTTPS settings
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    
-    # Security headers
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-    
-    # HSTS settings
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    
-    # Proxy settings for Render
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
-    # CSRF trusted origins
+    # CSRF trusted origins for Render
     CSRF_TRUSTED_ORIGINS = [
         'https://ecommerce-qdwv.onrender.com',
         'https://*.onrender.com',
     ]
-    
-    # Session settings
-    SESSION_COOKIE_AGE = 86400  # 24 hours
-    SESSION_SAVE_EVERY_REQUEST = True
-    SESSION_COOKIE_HTTPONLY = True
 
 # Session settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -215,12 +181,6 @@ if not DEBUG:
             'LOCATION': 'cache_table',
         }
     }
-    # Create cache table on first run
-    try:
-        from django.core.management import call_command
-        call_command('createcachetable')
-    except Exception:
-        pass
 else:
     CACHES = {
         'default': {
@@ -245,7 +205,7 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+            'formatter': 'simple',
         },
         'file': {
             'class': 'logging.FileHandler',
@@ -275,18 +235,7 @@ LOGGING = {
 if not os.path.exists(BASE_DIR / 'logs'):
     os.makedirs(BASE_DIR / 'logs')
 
-# Render Deployment Settings
-# This ensures the app works properly on Render
+# Render deployment detection
 if 'RENDER' in os.environ:
     print(f"🚀 Running on Render with DEBUG={DEBUG}", file=sys.stderr)
     print(f"🌐 Site URL: {BASE_URL}", file=sys.stderr)
-    
-    # Ensure static files work on Render
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    
-    # Ensure media files work on Render
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-print("✅ E-Commerce Platform settings loaded successfully!", file=sys.stderr)
