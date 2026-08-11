@@ -137,11 +137,14 @@ cloudinary.config(
 
 # Use Cloudinary for media storage
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-CLOUDINARY_URL = f"cloudinary://{CLOUDINARY_STORAGE['API_KEY']}:{CLOUDINARY_STORAGE['API_SECRET']}@{CLOUDINARY_STORAGE['CLOUD_NAME']}"
+
+# This is critical: set the Cloudinary URL environment variable
+os.environ['CLOUDINARY_URL'] = f"cloudinary://{CLOUDINARY_STORAGE['API_KEY']}:{CLOUDINARY_STORAGE['API_SECRET']}@{CLOUDINARY_STORAGE['CLOUD_NAME']}"
 
 # ============================================
 # MEDIA FILES - Now hosted on Cloudinary
 # ============================================
+# The MediaCloudinaryStorage will generate full URLs including /image/upload/
 MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_STORAGE["CLOUD_NAME"]}/'
 
 # ============================================
