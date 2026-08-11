@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import Avg, Count
 import uuid
+from cloudinary.models import CloudinaryField  # ✅ ADD THIS IMPORT
 
 User = get_user_model()
 
@@ -122,7 +123,8 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/')
+    # ✅ USE CloudinaryField INSTEAD OF ImageField
+    image = CloudinaryField('image', folder='products')
     is_primary = models.BooleanField(default=False)
     alt_text = models.CharField(max_length=200, blank=True)
     order = models.PositiveIntegerField(default=0)
