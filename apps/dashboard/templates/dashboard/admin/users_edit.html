@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit User - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+    .edit-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #c9a84c;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .edit-card .card-title {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        border-bottom: 2px solid #c9a84c;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .edit-card .form-label {
+        font-weight: 600;
+        color: #0a4a2a;
+    }
+    .edit-card .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    .edit-card .form-control:focus {
+        border-color: #c9a84c;
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    }
+    .edit-card .btn-save {
+        background: #0a4a2a;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .edit-card .btn-save:hover {
+        background: #062a18;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(10, 74, 42, 0.3);
+    }
+    .edit-card .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .edit-card .btn-cancel:hover {
+        background: #5a6268;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="edit-container">
+        <div class="edit-card">
+            <h4 class="card-title"><i class="fas fa-user-edit me-2" style="color: #c9a84c;"></i>Edit User</h4>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" value="{{ edit_user.username }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ edit_user.email }}" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ edit_user.first_name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ edit_user.last_name }}">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">User Type</label>
+                            <select name="user_type" class="form-control">
+                                <option value="customer" {% if edit_user.user_type == 'customer' %}selected{% endif %}>Customer</option>
+                                <option value="vendor" {% if edit_user.user_type == 'vendor' %}selected{% endif %}>Vendor</option>
+                                <option value="admin" {% if edit_user.user_type == 'admin' %}selected{% endif %}>Admin</option>
+                                <option value="moderator" {% if edit_user.user_type == 'moderator' %}selected{% endif %}>Moderator</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">New Password (optional)</label>
+                            <input type="password" name="password" class="form-control" placeholder="Leave blank to keep current password">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="is_active" class="form-check-input" {% if edit_user.is_active %}checked{% endif %}>
+                                <label class="form-check-label">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="is_blocked" class="form-check-input" {% if edit_user.is_blocked %}checked{% endif %}>
+                                <label class="form-check-label">Blocked</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                    <a href="{% url 'dashboard:admin_users' %}" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

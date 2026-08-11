@@ -15,6 +15,8 @@ from apps.products.models import Product, Category, Brand, ProductImage, Product
 from apps.accounts.models import User, Address
 from apps.payments.models import Payment
 from apps.cart.models import Cart
+from apps.wishlist.models import Wishlist, WishlistItem
+from apps.notifications.models import Notification
 
 # ============================================
 # CUSTOMER DASHBOARD VIEWS
@@ -719,6 +721,28 @@ def admin_reviews(request):
 
 @login_required
 @user_passes_test(is_admin)
+def admin_reviews_detail(request, review_id):
+    """Get review details as JSON"""
+    review = get_object_or_404(ProductReview, id=review_id)
+    data = {
+        'product_name': review.product.name,
+        'user_name': review.user.full_name,
+        'user_email': review.user.email,
+        'rating': review.rating,
+        'title': review.title,
+        'comment': review.comment,
+        'pros': review.pros,
+        'cons': review.cons,
+        'is_approved': review.is_approved,
+        'is_verified': review.is_verified,
+        'helpful_count': review.helpful_count,
+        'created_at': review.created_at.strftime('%Y-%m-%d %H:%M'),
+        'images': review.images,
+    }
+    return JsonResponse(data)
+
+@login_required
+@user_passes_test(is_admin)
 def admin_reviews_approve(request, review_id):
     review = get_object_or_404(ProductReview, id=review_id)
     
@@ -734,9 +758,9 @@ def admin_reviews_approve(request, review_id):
         product.save()
         
         messages.success(request, 'Review approved successfully!')
-        return redirect('dashboard:admin_reviews')
+        return JsonResponse({'success': True})
     
-    return redirect('dashboard:admin_reviews')
+    return JsonResponse({'success': False}, status=400)
 
 @login_required
 @user_passes_test(is_admin)
@@ -755,9 +779,9 @@ def admin_reviews_reject(request, review_id):
         product.save()
         
         messages.success(request, 'Review rejected successfully!')
-        return redirect('dashboard:admin_reviews')
+        return JsonResponse({'success': True})
     
-    return redirect('dashboard:admin_reviews')
+    return JsonResponse({'success': False}, status=400)
 
 @login_required
 @user_passes_test(is_admin)
@@ -775,9 +799,232 @@ def admin_reviews_delete(request, review_id):
         product.save()
         
         messages.success(request, 'Review deleted successfully!')
-        return redirect('dashboard:admin_reviews')
+        return JsonResponse({'success': True})
     
-    return redirect('dashboard:admin_reviews')
+    return JsonResponse({'success': False}, status=400)
+
+
+# ============================================
+# ADMIN WISHLIST MANAGEMENT
+# ============================================
+
+@login_required
+@user_passes_test(is_admin)
+def admin_wishlists(request):
+    wishlists = Wishlist.objects.all().order_by('-created_at')
+    
+    # Search
+    search_query = request.GET.get('q')
+    if search_query:
+        wishlists = wishlists.filter(
+            Q(user__username__icontains=search_query) |
+            Q(user__email__icontains=search_query) |
+            Q(user__first_name__icontains=search_query) |
+            Q(user__last_name__icontains=search_query)
+        )
+    
+    # Stats
+    total_wishlists = wishlists.count()
+    total_items = WishlistItem.objects.count()
+    
+    # Most wishlisted product
+    top_product = WishlistItem.objects.values('product__name').annotate(
+        count=Count('product')
+    ).order_by('-count').first()
+    
+    paginator = Paginator(wishlists, 20)
+    page = request.GET.get('page', 1)
+    try:
+        wishlists = paginator.page(page)
+    except PageNotAnInteger:
+        wishlists = paginator.page(1)
+    except EmptyPage:
+        wishlists = paginator.page(paginator.num_pages)
+    
+    context = {
+        'wishlists': wishlists,
+        'total_wishlists': total_wishlists,
+        'total_items': total_items,
+        'top_product_name': top_product['product__name'] if top_product else 'N/A',
+        'search_query': search_query,
+    }
+    return render(request, 'dashboard/admin/wishlist.html', context)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_wishlists_detail(request, wishlist_id):
+    wishlist = get_object_or_404(Wishlist, id=wishlist_id)
+    data = {
+        'user_name': wishlist.user.full_name,
+        'user_email': wishlist.user.email,
+        'total_items': wishlist.total_items,
+        'created_at': wishlist.created_at.strftime('%Y-%m-%d %H:%M'),
+        'items': [
+            {
+                'id': item.id,
+                'product_name': item.product.name,
+                'price': str(item.product.price),
+                'added_at': item.added_at.strftime('%Y-%m-%d %H:%M'),
+            }
+            for item in wishlist.items.all()
+        ]
+    }
+    return JsonResponse(data)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_wishlists_item_remove(request, item_id):
+    if request.method == 'POST':
+        item = get_object_or_404(WishlistItem, id=item_id)
+        item.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_wishlists_delete(request, wishlist_id):
+    if request.method == 'POST':
+        wishlist = get_object_or_404(Wishlist, id=wishlist_id)
+        wishlist.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
+
+
+# ============================================
+# ADMIN NOTIFICATION MANAGEMENT
+# ============================================
+
+@login_required
+@user_passes_test(is_admin)
+def admin_notifications(request):
+    notifications = Notification.objects.all().order_by('-created_at')
+    
+    # Search and filter
+    search_query = request.GET.get('q')
+    type_filter = request.GET.get('type')
+    status_filter = request.GET.get('status')
+    
+    if search_query:
+        notifications = notifications.filter(
+            Q(user__username__icontains=search_query) |
+            Q(user__email__icontains=search_query) |
+            Q(title__icontains=search_query) |
+            Q(message__icontains=search_query)
+        )
+    
+    if type_filter:
+        notifications = notifications.filter(type=type_filter)
+    
+    if status_filter == 'read':
+        notifications = notifications.filter(is_read=True)
+    elif status_filter == 'unread':
+        notifications = notifications.filter(is_read=False)
+    
+    # Stats
+    total_notifications = Notification.objects.count()
+    unread_count = Notification.objects.filter(is_read=False).count()
+    read_count = Notification.objects.filter(is_read=True).count()
+    unique_users = Notification.objects.values('user').distinct().count()
+    
+    paginator = Paginator(notifications, 20)
+    page = request.GET.get('page', 1)
+    try:
+        notifications = paginator.page(page)
+    except PageNotAnInteger:
+        notifications = paginator.page(1)
+    except EmptyPage:
+        notifications = paginator.page(paginator.num_pages)
+    
+    # All users for send notification
+    all_users = User.objects.filter(is_active=True)
+    
+    context = {
+        'notifications': notifications,
+        'total_notifications': total_notifications,
+        'unread_count': unread_count,
+        'read_count': read_count,
+        'unique_users': unique_users,
+        'all_users': all_users,
+        'search_query': search_query,
+        'type_filter': type_filter,
+        'status_filter': status_filter,
+    }
+    return render(request, 'dashboard/admin/notifications.html', context)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_notifications_detail(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id)
+    data = {
+        'user_name': notification.user.full_name,
+        'user_email': notification.user.email,
+        'type_display': notification.get_type_display(),
+        'title': notification.title,
+        'message': notification.message,
+        'is_read': notification.is_read,
+        'link': notification.link,
+        'created_at': notification.created_at.strftime('%Y-%m-%d %H:%M'),
+        'metadata': notification.metadata,
+    }
+    return JsonResponse(data)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_notifications_mark_read(request, notification_id):
+    if request.method == 'POST':
+        notification = get_object_or_404(Notification, id=notification_id)
+        notification.mark_as_read()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_notifications_delete(request, notification_id):
+    if request.method == 'POST':
+        notification = get_object_or_404(Notification, id=notification_id)
+        notification.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_notifications_send(request):
+    if request.method == 'POST':
+        notification_type = request.POST.get('type')
+        user_id = request.POST.get('user_id')
+        title = request.POST.get('title')
+        message = request.POST.get('message')
+        link = request.POST.get('link', '')
+        
+        if user_id:
+            # Send to specific user
+            user = get_object_or_404(User, id=user_id)
+            Notification.objects.create(
+                user=user,
+                type=notification_type,
+                title=title,
+                message=message,
+                link=link
+            )
+            messages.success(request, f'Notification sent to {user.full_name}')
+        else:
+            # Send to all users
+            users = User.objects.filter(is_active=True)
+            count = 0
+            for user in users:
+                Notification.objects.create(
+                    user=user,
+                    type=notification_type,
+                    title=title,
+                    message=message,
+                    link=link
+                )
+                count += 1
+            messages.success(request, f'Notification sent to {count} users')
+        
+        return redirect('dashboard:admin_notifications')
+    
+    return redirect('dashboard:admin_notifications')
 
 
 # ============================================

@@ -7,9 +7,128 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
     
-    .admin-dashboard {
+    .admin-wrapper {
+        display: flex;
+        gap: 2rem;
         max-width: 1400px;
         margin: 2rem auto;
+        min-height: 600px;
+    }
+    
+    /* ============================================
+       SIDEBAR
+    ============================================ */
+    .admin-sidebar {
+        width: 260px;
+        min-width: 260px;
+        background: white;
+        border-radius: 16px;
+        border: 2px solid #e0e0e0;
+        padding: 1.5rem 0;
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-sidebar:hover {
+        border-color: #c9a84c;
+    }
+    
+    .admin-sidebar .sidebar-header {
+        padding: 0 1.5rem 1rem;
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 1rem;
+    }
+    
+    .admin-sidebar .sidebar-header h6 {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+    }
+    
+    .admin-sidebar .sidebar-header small {
+        color: #6c757d;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.75rem;
+    }
+    
+    .admin-sidebar .sidebar-section {
+        padding: 0 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .admin-sidebar .sidebar-section .section-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #6c757d;
+        font-weight: 700;
+        padding: 0.5rem 0.75rem;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .admin-sidebar .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        color: #495057;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .admin-sidebar .nav-link:hover {
+        background: #f5edd6;
+        color: #0a4a2a;
+        transform: translateX(5px);
+    }
+    
+    .admin-sidebar .nav-link.active {
+        background: #0a4a2a;
+        color: white;
+    }
+    
+    .admin-sidebar .nav-link.active i {
+        color: #c9a84c;
+    }
+    
+    .admin-sidebar .nav-link i {
+        width: 20px;
+        text-align: center;
+        color: #c9a84c;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-sidebar .nav-link .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc3545;
+        display: inline-block;
+        margin-left: auto;
+        animation: pulse-dot 2s infinite;
+    }
+    
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    
+    /* ============================================
+       MAIN CONTENT
+    ============================================ */
+    .admin-content {
+        flex: 1;
+        min-width: 0;
     }
     
     .admin-header {
@@ -51,7 +170,7 @@
     
     .admin-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
@@ -72,7 +191,7 @@
     }
     
     .stat-card .stat-icon {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         color: #c9a84c;
         margin-bottom: 0.5rem;
         display: block;
@@ -80,7 +199,7 @@
     
     .stat-card .stat-number {
         font-family: 'Playfair Display', serif;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: 700;
         color: #0a4a2a;
         margin-bottom: 0;
@@ -89,7 +208,7 @@
     .stat-card .stat-label {
         font-family: 'Source Sans Pro', sans-serif;
         color: #6c757d;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-bottom: 0;
     }
     
@@ -115,7 +234,7 @@
         font-family: 'Playfair Display', serif;
         color: #0a4a2a;
         font-weight: 700;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
         border-bottom: 2px solid #e9ecef;
@@ -126,7 +245,7 @@
     
     .dashboard-card .card-title a {
         font-family: 'Source Sans Pro', sans-serif;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: #c9a84c;
         text-decoration: none;
         font-weight: 600;
@@ -162,7 +281,7 @@
     .user-item .user-role {
         padding: 0.2rem 0.8rem;
         border-radius: 20px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
     }
     
@@ -170,6 +289,20 @@
     .user-role.vendor { background: #d4edda; color: #155724; }
     .user-role.customer { background: #fff3cd; color: #856404; }
     .user-role.moderator { background: #d1ecf1; color: #0c5460; }
+    
+    .order-status {
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .order-status.pending { background: #fff3cd; color: #856404; }
+    .order-status.processing { background: #cce5ff; color: #004085; }
+    .order-status.shipped { background: #d1ecf1; color: #0c5460; }
+    .order-status.delivered { background: #d4edda; color: #155724; }
+    .order-status.cancelled { background: #f8d7da; color: #721c24; }
+    .order-status.refunded { background: #f5c6cb; color: #721c24; }
     
     .admin-actions {
         display: grid;
@@ -188,6 +321,7 @@
         font-weight: 600;
         transition: all 0.3s ease;
         background: white;
+        font-size: 0.85rem;
     }
     
     .admin-action-btn:hover {
@@ -204,62 +338,52 @@
         margin-bottom: 0.25rem;
     }
     
-    .btn-primary-green {
-        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        font-family: 'Source Sans Pro', sans-serif;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-primary-green:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(10, 74, 42, 0.3);
-        color: white;
-    }
-    
-    .btn-outline-danger {
-        border: 2px solid #dc3545;
-        color: #dc3545;
-        background: transparent;
-        padding: 0.25rem 0.75rem;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-outline-danger:hover {
-        background: #dc3545;
-        color: white;
-    }
-    
-    .btn-outline-primary {
-        border: 2px solid #0a4a2a;
-        color: #0a4a2a;
-        background: transparent;
-        padding: 0.25rem 0.75rem;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-outline-primary:hover {
-        background: #0a4a2a;
-        color: white;
-    }
-    
-    @media (max-width: 768px) {
+    /* ============================================
+       MOBILE RESPONSIVE
+    ============================================ */
+    @media (max-width: 992px) {
+        .admin-wrapper {
+            flex-direction: column;
+        }
+        
+        .admin-sidebar {
+            width: 100%;
+            min-width: unset;
+            position: static;
+            padding: 1rem;
+        }
+        
+        .admin-sidebar .sidebar-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 0;
+        }
+        
+        .admin-sidebar .sidebar-section .section-label {
+            width: 100%;
+        }
+        
+        .admin-sidebar .nav-link {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .admin-sidebar .sidebar-header {
+            display: none;
+        }
+        
         .admin-grid {
             grid-template-columns: 1fr;
         }
-        
+    }
+    
+    @media (max-width: 768px) {
         .admin-stats {
             grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
         
         .admin-header {
@@ -270,145 +394,257 @@
         .admin-actions {
             grid-template-columns: 1fr 1fr;
         }
+        
+        .stat-card .stat-number {
+            font-size: 1.8rem;
+        }
+        
+        .admin-sidebar .nav-link {
+            min-width: 80px;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+        }
+        
+        .admin-sidebar .nav-link i {
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .admin-stats {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-card .stat-number {
+            font-size: 1.4rem;
+        }
+        
+        .admin-actions {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .admin-action-btn {
+            padding: 0.75rem;
+            font-size: 0.75rem;
+        }
+        
+        .admin-action-btn i {
+            font-size: 1.2rem;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="admin-dashboard">
-        <!-- Admin Header -->
-        <div class="admin-header">
-            <div>
-                <h2><i class="fas fa-crown me-2"></i>Admin Dashboard</h2>
-                <p>Welcome back, {{ user.full_name }}! Manage your store efficiently.</p>
-            </div>
-            <div>
-                <span class="admin-badge">
-                    <i class="fas fa-user-shield me-1"></i>Administrator
-                </span>
-                <p class="mt-2" style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">
-                    <i class="fas fa-calendar-alt me-1"></i>{% now "l, F j, Y" %}
-                </p>
-            </div>
-        </div>
-        
-        <!-- Stats -->
-        <div class="admin-stats">
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-users"></i></span>
-                <h3 class="stat-number">{{ total_users|default:0 }}</h3>
-                <p class="stat-label">Total Users</p>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-box"></i></span>
-                <h3 class="stat-number">{{ total_products|default:0 }}</h3>
-                <p class="stat-label">Total Products</p>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-shopping-cart"></i></span>
-                <h3 class="stat-number">{{ total_orders|default:0 }}</h3>
-                <p class="stat-label">Total Orders</p>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span>
-                <h3 class="stat-number">KES {{ total_revenue|default:"0"|floatformat:0 }}</h3>
-                <p class="stat-label">Total Revenue</p>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-star"></i></span>
-                <h3 class="stat-number">{{ total_reviews|default:0 }}</h3>
-                <p class="stat-label">Total Reviews</p>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-credit-card"></i></span>
-                <h3 class="stat-number">{{ total_payments|default:0 }}</h3>
-                <p class="stat-label">Total Payments</p>
-            </div>
-        </div>
-        
-        <!-- Admin Grid -->
-        <div class="admin-grid">
-            <!-- Recent Orders -->
-            <div class="dashboard-card">
-                <div class="card-title">
-                    <span><i class="fas fa-clock me-2" style="color: #c9a84c;"></i>Recent Orders</span>
-                    <a href="{% url 'dashboard:admin_orders' %}">View All <i class="fas fa-arrow-right"></i></a>
-                </div>
-                {% if recent_orders %}
-                    {% for order in recent_orders|slice:":5" %}
-                    <div class="order-item">
-                        <div>
-                            <div><strong>#{{ order.order_number }}</strong></div>
-                            <small class="text-muted">{{ order.user.email }} • {{ order.created_at|date:"M d, Y" }}</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
-                            <div><strong>KES {{ order.total_amount }}</strong></div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-muted text-center py-3">No orders yet.</p>
-                {% endif %}
+    <div class="admin-wrapper">
+        <!-- ============================================
+        SIDEBAR
+        ============================================ -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h6><i class="fas fa-crown me-2" style="color: #c9a84c;"></i>Admin Panel</h6>
+                <small>{{ user.full_name }}</small>
             </div>
             
-            <!-- Quick Actions -->
-            <div>
-                <div class="dashboard-card mb-3">
-                    <div class="card-title">
-                        <span><i class="fas fa-bolt me-2" style="color: #c9a84c;"></i>Quick Actions</span>
-                    </div>
-                    <div class="admin-actions">
-                        <a href="{% url 'dashboard:admin_users' %}" class="admin-action-btn">
-                            <i class="fas fa-users"></i>
-                            Users
-                        </a>
-                        <a href="{% url 'dashboard:admin_products' %}" class="admin-action-btn">
-                            <i class="fas fa-box"></i>
-                            Products
-                        </a>
-                        <a href="{% url 'dashboard:admin_orders' %}" class="admin-action-btn">
-                            <i class="fas fa-shopping-cart"></i>
-                            Orders
-                        </a>
-                        <a href="{% url 'dashboard:admin_payments' %}" class="admin-action-btn">
-                            <i class="fas fa-credit-card"></i>
-                            Payments
-                        </a>
-                        <a href="{% url 'dashboard:admin_reviews' %}" class="admin-action-btn">
-                            <i class="fas fa-star"></i>
-                            Reviews
-                        </a>
-                        <a href="{% url 'dashboard:admin_reports' %}" class="admin-action-btn">
-                            <i class="fas fa-chart-bar"></i>
-                            Reports
-                        </a>
-                    </div>
+            <!-- Dashboard -->
+            <div class="sidebar-section">
+                <div class="section-label">Main</div>
+                <a href="{% url 'dashboard:admin_dashboard' %}" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </div>
+            
+            <!-- Management -->
+            <div class="sidebar-section">
+                <div class="section-label">Management</div>
+                <a href="{% url 'dashboard:admin_users' %}" class="nav-link">
+                    <i class="fas fa-users"></i> Users
+                </a>
+                <a href="{% url 'dashboard:admin_products' %}" class="nav-link">
+                    <i class="fas fa-box"></i> Products
+                </a>
+                <a href="{% url 'dashboard:admin_orders' %}" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i> Orders
+                </a>
+                <a href="{% url 'dashboard:admin_payments' %}" class="nav-link">
+                    <i class="fas fa-credit-card"></i> Payments
+                </a>
+                <a href="{% url 'dashboard:admin_reviews' %}" class="nav-link">
+                    <i class="fas fa-star"></i> Reviews
+                </a>
+                <a href="{% url 'dashboard:admin_wishlists' %}" class="nav-link">
+                    <i class="fas fa-heart"></i> Wishlists
+                </a>
+                <a href="{% url 'dashboard:admin_notifications' %}" class="nav-link">
+                    <i class="fas fa-bell"></i> Notifications
+                    <span class="badge-dot" title="New notifications"></span>
+                </a>
+            </div>
+            
+            <!-- Analytics -->
+            <div class="sidebar-section">
+                <div class="section-label">Analytics</div>
+                <a href="{% url 'dashboard:admin_reports' %}" class="nav-link">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </div>
+            
+            <!-- System -->
+            <div class="sidebar-section">
+                <div class="section-label">System</div>
+                <a href="{% url 'admin:index' %}" class="nav-link" target="_blank">
+                    <i class="fas fa-cog"></i> Django Admin
+                </a>
+                <a href="{% url 'products:home' %}" class="nav-link" target="_blank">
+                    <i class="fas fa-store"></i> View Store
+                </a>
+            </div>
+        </aside>
+        
+        <!-- ============================================
+        MAIN CONTENT
+        ============================================ -->
+        <main class="admin-content">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <div>
+                    <h2><i class="fas fa-crown me-2"></i>Admin Dashboard</h2>
+                    <p>Welcome back, {{ user.full_name }}! Manage your store efficiently.</p>
                 </div>
-                
-                <!-- Recent Users -->
+                <div>
+                    <span class="admin-badge">
+                        <i class="fas fa-user-shield me-1"></i>Administrator
+                    </span>
+                    <p class="mt-2" style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">
+                        <i class="fas fa-calendar-alt me-1"></i>{% now "l, F j, Y" %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <span class="stat-icon"><i class="fas fa-users"></i></span>
+                    <h3 class="stat-number">{{ total_users|default:0 }}</h3>
+                    <p class="stat-label">Total Users</p>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon"><i class="fas fa-box"></i></span>
+                    <h3 class="stat-number">{{ total_products|default:0 }}</h3>
+                    <p class="stat-label">Total Products</p>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <h3 class="stat-number">{{ total_orders|default:0 }}</h3>
+                    <p class="stat-label">Total Orders</p>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span>
+                    <h3 class="stat-number">KES {{ total_revenue|default:"0"|floatformat:0 }}</h3>
+                    <p class="stat-label">Total Revenue</p>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon"><i class="fas fa-star"></i></span>
+                    <h3 class="stat-number">{{ total_reviews|default:0 }}</h3>
+                    <p class="stat-label">Total Reviews</p>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon"><i class="fas fa-credit-card"></i></span>
+                    <h3 class="stat-number">{{ total_payments|default:0 }}</h3>
+                    <p class="stat-label">Total Payments</p>
+                </div>
+            </div>
+            
+            <!-- Admin Grid -->
+            <div class="admin-grid">
+                <!-- Recent Orders -->
                 <div class="dashboard-card">
                     <div class="card-title">
-                        <span><i class="fas fa-user-plus me-2" style="color: #c9a84c;"></i>Recent Users</span>
-                        <a href="{% url 'dashboard:admin_users' %}">View All <i class="fas fa-arrow-right"></i></a>
+                        <span><i class="fas fa-clock me-2" style="color: #c9a84c;"></i>Recent Orders</span>
+                        <a href="{% url 'dashboard:admin_orders' %}">View All <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    {% if recent_users %}
-                        {% for user in recent_users|slice:":4" %}
-                        <div class="user-item">
-                            <div class="user-info">
-                                <div class="name">{{ user.full_name }}</div>
-                                <div class="email">{{ user.email }}</div>
+                    {% if recent_orders %}
+                        {% for order in recent_orders|slice:":5" %}
+                        <div class="order-item">
+                            <div>
+                                <div><strong>#{{ order.order_number }}</strong></div>
+                                <small class="text-muted">{{ order.user.email }} • {{ order.created_at|date:"M d, Y" }}</small>
                             </div>
-                            <span class="user-role {{ user.user_type }}">{{ user.get_user_type_display }}</span>
+                            <div class="text-end">
+                                <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
+                                <div><strong>KES {{ order.total_amount }}</strong></div>
+                            </div>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <p class="text-muted text-center py-3">No recent users.</p>
+                        <p class="text-muted text-center py-3">No orders yet.</p>
                     {% endif %}
                 </div>
+                
+                <!-- Quick Actions & Recent Users -->
+                <div>
+                    <!-- Quick Actions -->
+                    <div class="dashboard-card mb-3">
+                        <div class="card-title">
+                            <span><i class="fas fa-bolt me-2" style="color: #c9a84c;"></i>Quick Actions</span>
+                        </div>
+                        <div class="admin-actions">
+                            <a href="{% url 'dashboard:admin_users' %}" class="admin-action-btn">
+                                <i class="fas fa-users"></i>
+                                Users
+                            </a>
+                            <a href="{% url 'dashboard:admin_products' %}" class="admin-action-btn">
+                                <i class="fas fa-box"></i>
+                                Products
+                            </a>
+                            <a href="{% url 'dashboard:admin_orders' %}" class="admin-action-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                Orders
+                            </a>
+                            <a href="{% url 'dashboard:admin_payments' %}" class="admin-action-btn">
+                                <i class="fas fa-credit-card"></i>
+                                Payments
+                            </a>
+                            <a href="{% url 'dashboard:admin_reviews' %}" class="admin-action-btn">
+                                <i class="fas fa-star"></i>
+                                Reviews
+                            </a>
+                            <a href="{% url 'dashboard:admin_reports' %}" class="admin-action-btn">
+                                <i class="fas fa-chart-bar"></i>
+                                Reports
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Users -->
+                    <div class="dashboard-card">
+                        <div class="card-title">
+                            <span><i class="fas fa-user-plus me-2" style="color: #c9a84c;"></i>Recent Users</span>
+                            <a href="{% url 'dashboard:admin_users' %}">View All <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        {% if recent_users %}
+                            {% for user in recent_users|slice:":4" %}
+                            <div class="user-item">
+                                <div class="user-info">
+                                    <div class="name">{{ user.full_name }}</div>
+                                    <div class="email">{{ user.email }}</div>
+                                </div>
+                                <span class="user-role {{ user.user_type }}">{{ user.get_user_type_display }}</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center py-3">No recent users.</p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 </div>
 {% endblock %}

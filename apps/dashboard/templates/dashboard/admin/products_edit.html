@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Product - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-container {
+        max-width: 900px;
+        margin: 2rem auto;
+    }
+    .edit-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #c9a84c;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .edit-card .card-title {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        border-bottom: 2px solid #c9a84c;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .edit-card .form-label {
+        font-weight: 600;
+        color: #0a4a2a;
+    }
+    .edit-card .form-control, .edit-card .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    .edit-card .form-control:focus, .edit-card .form-select:focus {
+        border-color: #c9a84c;
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    }
+    .edit-card .btn-save {
+        background: #0a4a2a;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .edit-card .btn-save:hover {
+        background: #062a18;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(10, 74, 42, 0.3);
+    }
+    .edit-card .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .edit-card .btn-cancel:hover {
+        background: #5a6268;
+    }
+    .edit-card .form-check-input:checked {
+        background-color: #0a4a2a;
+        border-color: #0a4a2a;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="edit-container">
+        <div class="edit-card">
+            <h4 class="card-title"><i class="fas fa-edit me-2" style="color: #c9a84c;"></i>Edit Product</h4>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Product Name *</label>
+                            <input type="text" name="name" class="form-control" value="{{ product.name }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">SKU</label>
+                            <input type="text" name="sku" class="form-control" value="{{ product.sku }}" readonly>
+                            <small class="text-muted">SKU cannot be changed</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Category *</label>
+                            <select name="category" class="form-select" required>
+                                <option value="">Select Category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Brand</label>
+                            <select name="brand" class="form-select">
+                                <option value="">Select Brand</option>
+                                {% for brand in brands %}
+                                    <option value="{{ brand.id }}" {% if product.brand.id == brand.id %}selected{% endif %}>{{ brand.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Vendor *</label>
+                            <select name="vendor" class="form-select" required>
+                                <option value="">Select Vendor</option>
+                                {% for vendor in vendors %}
+                                    <option value="{{ vendor.id }}" {% if product.vendor.id == vendor.id %}selected{% endif %}>{{ vendor.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Condition</label>
+                            <select name="condition" class="form-select">
+                                <option value="new" {% if product.condition == 'new' %}selected{% endif %}>New</option>
+                                <option value="used" {% if product.condition == 'used' %}selected{% endif %}>Used</option>
+                                <option value="refurbished" {% if product.condition == 'refurbished' %}selected{% endif %}>Refurbished</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Price (KES) *</label>
+                            <input type="number" step="0.01" name="price" class="form-control" value="{{ product.price }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Compare Price</label>
+                            <input type="number" step="0.01" name="compare_price" class="form-control" value="{{ product.compare_price }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Stock *</label>
+                            <input type="number" name="stock" class="form-control" value="{{ product.stock }}" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Short Description</label>
+                    <input type="text" name="short_description" class="form-control" value="{{ product.short_description }}" maxlength="500">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Full Description *</label>
+                    <textarea name="description" class="form-control" rows="5" required>{{ product.description }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="is_active" class="form-check-input" {% if product.is_active %}checked{% endif %}>
+                                <label class="form-check-label">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="is_featured" class="form-check-input" {% if product.is_featured %}checked{% endif %}>
+                                <label class="form-check-label">Featured</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="is_best_seller" class="form-check-input" {% if product.is_best_seller %}checked{% endif %}>
+                                <label class="form-check-label">Best Seller</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                    <a href="{% url 'dashboard:admin_products' %}" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

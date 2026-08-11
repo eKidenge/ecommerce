@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Detail - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+    .detail-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #c9a84c;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+    }
+    .detail-card .card-title {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        border-bottom: 2px solid #c9a84c;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .order-info-grid .info-item {
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .order-info-grid .info-item label {
+        font-weight: 600;
+        color: #0a4a2a;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    .order-info-grid .info-item .value {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+    .order-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .order-status.pending { background: #fff3cd; color: #856404; }
+    .order-status.processing { background: #cce5ff; color: #004085; }
+    .order-status.shipped { background: #d1ecf1; color: #0c5460; }
+    .order-status.delivered { background: #d4edda; color: #155724; }
+    .order-status.cancelled { background: #f8d7da; color: #721c24; }
+    .order-status.refunded { background: #f5c6cb; color: #721c24; }
+    .payment-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .payment-status.pending { background: #fff3cd; color: #856404; }
+    .payment-status.paid { background: #d4edda; color: #155724; }
+    .payment-status.failed { background: #f8d7da; color: #721c24; }
+    .payment-status.refunded { background: #f5c6cb; color: #721c24; }
+    .table-container {
+        overflow-x: auto;
+    }
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table-container th {
+        text-align: left;
+        padding: 0.75rem;
+        border-bottom: 2px solid #c9a84c;
+        font-weight: 700;
+        color: #0a4a2a;
+    }
+    .table-container td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-back:hover {
+        background: #5a6268;
+        color: white;
+    }
+    .btn-edit {
+        background: #ffc107;
+        color: #212529;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-edit:hover {
+        background: #e0a800;
+        color: #212529;
+    }
+    .total-row {
+        font-weight: 700;
+        font-size: 1.1rem;
+        background: #f8f9fa;
+    }
+    .total-row td {
+        border-top: 2px solid #0a4a2a;
+        padding: 1rem 0.75rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="detail-container">
+        <!-- Order Details -->
+        <div class="detail-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="card-title"><i class="fas fa-shopping-cart me-2" style="color: #c9a84c;"></i>Order #{{ order.order_number }}</h4>
+                <div>
+                    <a href="{% url 'dashboard:admin_orders' %}" class="btn-back">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                    </a>
+                    <a href="{% url 'dashboard:admin_orders_update_status' order.id %}" class="btn-edit ms-2">
+                        <i class="fas fa-edit me-2"></i>Update Status
+                    </a>
+                </div>
+            </div>
+            
+            <div class="order-info-grid">
+                <div class="info-item">
+                    <label>Order Date</label>
+                    <div class="value">{{ order.created_at|date:"F j, Y, g:i a" }}</div>
+                </div>
+                <div class="info-item">
+                    <label>Customer</label>
+                    <div class="value">{{ order.user.full_name }}</div>
+                    <div style="font-size: 0.85rem; color: #6c757d;">{{ order.user.email }}</div>
+                </div>
+                <div class="info-item">
+                    <label>Order Status</label>
+                    <div class="value"><span class="order-status {{ order.status }}">{{ order.get_status_display }}</span></div>
+                </div>
+                <div class="info-item">
+                    <label>Payment Status</label>
+                    <div class="value"><span class="payment-status {{ order.payment_status }}">{{ order.get_payment_status_display }}</span></div>
+                </div>
+                <div class="info-item">
+                    <label>Payment Method</label>
+                    <div class="value">{{ order.payment_method|default:"Not specified" }}</div>
+                </div>
+                <div class="info-item">
+                    <label>Tracking Number</label>
+                    <div class="value">{{ order.tracking_number|default:"Not assigned" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Shipping Address -->
+        <div class="detail-card">
+            <h5 class="card-title"><i class="fas fa-truck me-2" style="color: #c9a84c;"></i>Shipping Address</h5>
+            {% if order.shipping_address %}
+                <p style="margin-bottom: 0;">
+                    {{ order.shipping_address.address_line1 }}<br>
+                    {% if order.shipping_address.address_line2 %}{{ order.shipping_address.address_line2 }}<br>{% endif %}
+                    {{ order.shipping_address.city }}, {{ order.shipping_address.state }}<br>
+                    {{ order.shipping_address.country }} - {{ order.shipping_address.postal_code }}<br>
+                    <strong>Phone:</strong> {{ order.shipping_address.phone_number }}
+                </p>
+            {% else %}
+                <p class="text-muted">No shipping address provided.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Order Items -->
+        <div class="detail-card">
+            <h5 class="card-title"><i class="fas fa-box me-2" style="color: #c9a84c;"></i>Order Items</h5>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>SKU</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.sku }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>KES {{ item.unit_price|floatformat:2 }}</td>
+                            <td>KES {{ item.total_price|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="total-row">
+                            <td colspan="4" style="text-align: right;">Subtotal:</td>
+                            <td>KES {{ order.subtotal|floatformat:2 }}</td>
+                        </tr>
+                        {% if order.discount_amount > 0 %}
+                        <tr>
+                            <td colspan="4" style="text-align: right; color: #28a745;">Discount:</td>
+                            <td style="color: #28a745;">-KES {{ order.discount_amount|floatformat:2 }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if order.shipping_cost > 0 %}
+                        <tr>
+                            <td colspan="4" style="text-align: right;">Shipping:</td>
+                            <td>KES {{ order.shipping_cost|floatformat:2 }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if order.tax_amount > 0 %}
+                        <tr>
+                            <td colspan="4" style="text-align: right;">Tax:</td>
+                            <td>KES {{ order.tax_amount|floatformat:2 }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr class="total-row">
+                            <td colspan="4" style="text-align: right; font-size: 1.2rem;">Total:</td>
+                            <td style="font-size: 1.2rem; color: #0a4a2a;">KES {{ order.total_amount|floatformat:2 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Order Notes -->
+        {% if order.customer_notes or order.admin_notes %}
+        <div class="detail-card">
+            <h5 class="card-title"><i class="fas fa-sticky-note me-2" style="color: #c9a84c;"></i>Order Notes</h5>
+            {% if order.customer_notes %}
+            <div class="mb-2">
+                <strong>Customer Notes:</strong>
+                <p class="bg-light p-2 rounded">{{ order.customer_notes }}</p>
+            </div>
+            {% endif %}
+            {% if order.admin_notes %}
+            <div>
+                <strong>Admin Notes:</strong>
+                <p class="bg-light p-2 rounded">{{ order.admin_notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

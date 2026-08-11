@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Update Order Status - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .update-container {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    .update-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #c9a84c;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .update-card .card-title {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        border-bottom: 2px solid #c9a84c;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .update-card .form-label {
+        font-weight: 600;
+        color: #0a4a2a;
+    }
+    .update-card .form-control, .update-card .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    .update-card .form-control:focus, .update-card .form-select:focus {
+        border-color: #c9a84c;
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    }
+    .update-card .btn-update {
+        background: #0a4a2a;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .update-card .btn-update:hover {
+        background: #062a18;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(10, 74, 42, 0.3);
+    }
+    .update-card .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .update-card .btn-cancel:hover {
+        background: #5a6268;
+    }
+    .order-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .order-status.pending { background: #fff3cd; color: #856404; }
+    .order-status.processing { background: #cce5ff; color: #004085; }
+    .order-status.shipped { background: #d1ecf1; color: #0c5460; }
+    .order-status.delivered { background: #d4edda; color: #155724; }
+    .order-status.cancelled { background: #f8d7da; color: #721c24; }
+    .order-status.refunded { background: #f5c6cb; color: #721c24; }
+    .current-status {
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="update-container">
+        <div class="update-card">
+            <h4 class="card-title"><i class="fas fa-edit me-2" style="color: #c9a84c;"></i>Update Order Status</h4>
+            
+            <div class="current-status">
+                <strong>Order #{{ order.order_number }}</strong><br>
+                <strong>Current Status:</strong> <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label">New Status</label>
+                    <select name="status" class="form-select" required>
+                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+                        <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        <option value="refunded" {% if order.status == 'refunded' %}selected{% endif %}>Refunded</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Note (Optional)</label>
+                    <textarea name="note" class="form-control" rows="3" placeholder="Add a note about this status update..."></textarea>
+                </div>
+                
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn-update">
+                        <i class="fas fa-save me-2"></i>Update Status
+                    </button>
+                    <a href="{% url 'dashboard:admin_orders_detail' order.id %}" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

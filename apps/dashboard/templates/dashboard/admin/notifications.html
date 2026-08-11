@@ -1,0 +1,571 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Notifications - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .manage-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+    }
+    .manage-header {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%);
+        border-radius: 12px;
+        border: 2px solid #c9a84c;
+        padding: 1.5rem 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .manage-header h4 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    .manage-header p {
+        color: rgba(255,255,255,0.8);
+        margin-bottom: 0;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .stats-grid .stat-card {
+        background: white;
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .stats-grid .stat-card:hover {
+        border-color: #c9a84c;
+        transform: translateY(-2px);
+    }
+    .stats-grid .stat-card .stat-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0a4a2a;
+        margin-bottom: 0;
+    }
+    .stats-grid .stat-card .stat-label {
+        font-family: 'Source Sans Pro', sans-serif;
+        color: #6c757d;
+        font-size: 0.8rem;
+        margin-bottom: 0;
+    }
+    .btn-primary-green {
+        background: #c9a84c;
+        color: #0a4a2a;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-primary-green:hover {
+        background: #a88a3a;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(201, 168, 76, 0.3);
+        color: #0a4a2a;
+    }
+    .search-filter {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .search-filter input, .search-filter select {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    .search-filter input:focus, .search-filter select:focus {
+        border-color: #c9a84c;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    }
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        overflow: hidden;
+        padding: 1.5rem;
+    }
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table-container th {
+        text-align: left;
+        padding: 1rem 0.75rem;
+        border-bottom: 2px solid #c9a84c;
+        font-weight: 700;
+        color: #0a4a2a;
+        font-family: 'Source Sans Pro', sans-serif;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    .table-container td {
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid #f1f3f5;
+        vertical-align: middle;
+    }
+    .table-container tr:hover {
+        background: #f8f9fa;
+    }
+    .notification-type {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .notification-type.order { background: #cce5ff; color: #004085; }
+    .notification-type.payment { background: #d4edda; color: #155724; }
+    .notification-type.product { background: #fff3cd; color: #856404; }
+    .notification-type.system { background: #d1ecf1; color: #0c5460; }
+    .notification-type.promotion { background: #f8d7da; color: #721c24; }
+    .notification-type.review { background: #e8daef; color: #6c3a7a; }
+    .notification-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .notification-status.read { background: #d4edda; color: #155724; }
+    .notification-status.unread { background: #f8d7da; color: #721c24; }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-success { background: #28a745; color: white; }
+    .btn-success:hover { background: #218838; color: white; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-danger:hover { background: #c82333; color: white; }
+    .btn-info { background: #17a2b8; color: white; }
+    .btn-info:hover { background: #138496; color: white; }
+    .btn-warning { background: #ffc107; color: #212529; }
+    .btn-warning:hover { background: #e0a800; color: #212529; }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .pagination .page-item {
+        list-style: none;
+    }
+    .pagination .page-link {
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #0a4a2a;
+        transition: all 0.3s ease;
+    }
+    .pagination .page-link:hover {
+        border-color: #c9a84c;
+        background: #f5edd6;
+    }
+    .pagination .active .page-link {
+        background: #0a4a2a;
+        color: white;
+        border-color: #0a4a2a;
+    }
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    .no-data i {
+        font-size: 3rem;
+        color: #c9a84c;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    .notification-message {
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .btn-send {
+        background: #0a4a2a;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-send:hover {
+        background: #062a18;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(10, 74, 42, 0.3);
+        color: white;
+    }
+    .notification-actions {
+        display: flex;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+    }
+    @media (max-width: 768px) {
+        .manage-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        .search-filter {
+            flex-direction: column;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .notification-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="manage-container">
+        <!-- Header -->
+        <div class="manage-header">
+            <div>
+                <h4><i class="fas fa-bell me-2"></i>Manage Notifications</h4>
+                <p>View, send, and manage system notifications</p>
+            </div>
+            <div>
+                <button onclick="openSendNotification()" class="btn-primary-green">
+                    <i class="fas fa-plus me-2"></i>Send Notification
+                </button>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_notifications|default:0 }}</div>
+                <div class="stat-label">Total Notifications</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ unread_count|default:0 }}</div>
+                <div class="stat-label">Unread</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ read_count|default:0 }}</div>
+                <div class="stat-label">Read</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ unique_users|default:0 }}</div>
+                <div class="stat-label">Users Notified</div>
+            </div>
+        </div>
+        
+        <!-- Search & Filter -->
+        <div class="search-filter">
+            <form method="GET" class="d-flex gap-2 flex-wrap w-100">
+                <input type="text" name="q" class="flex-grow-1" placeholder="Search by user, title, or message..." value="{{ search_query }}">
+                <select name="type">
+                    <option value="">All Types</option>
+                    <option value="order" {% if type_filter == 'order' %}selected{% endif %}>Order</option>
+                    <option value="payment" {% if type_filter == 'payment' %}selected{% endif %}>Payment</option>
+                    <option value="product" {% if type_filter == 'product' %}selected{% endif %}>Product</option>
+                    <option value="system" {% if type_filter == 'system' %}selected{% endif %}>System</option>
+                    <option value="promotion" {% if type_filter == 'promotion' %}selected{% endif %}>Promotion</option>
+                    <option value="review" {% if type_filter == 'review' %}selected{% endif %}>Review</option>
+                </select>
+                <select name="status">
+                    <option value="">All Status</option>
+                    <option value="read" {% if status_filter == 'read' %}selected{% endif %}>Read</option>
+                    <option value="unread" {% if status_filter == 'unread' %}selected{% endif %}>Unread</option>
+                </select>
+                <button type="submit" class="btn-primary-green">Filter</button>
+                <a href="{% url 'dashboard:admin_notifications' %}" class="btn btn-secondary" style="border: 2px solid #6c757d; color: #6c757d; background: transparent; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; text-decoration: none;">Clear</a>
+            </form>
+        </div>
+        
+        <!-- Notifications Table -->
+        <div class="table-container">
+            {% if notifications %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notification in notifications %}
+                    <tr>
+                        <td>
+                            <strong>{{ notification.user.full_name }}</strong>
+                            <br><small class="text-muted">{{ notification.user.email }}</small>
+                        </td>
+                        <td>
+                            <span class="notification-type {{ notification.type }}">
+                                <i class="fas fa-{% if notification.type == 'order' %}shopping-cart{% elif notification.type == 'payment' %}credit-card{% elif notification.type == 'product' %}box{% elif notification.type == 'system' %}cog{% elif notification.type == 'promotion' %}gift{% elif notification.type == 'review' %}star{% endif %} me-1"></i>
+                                {{ notification.get_type_display }}
+                            </span>
+                        </td>
+                        <td><strong>{{ notification.title|truncatechars:25 }}</strong></td>
+                        <td>
+                            <div class="notification-message" title="{{ notification.message }}">
+                                {{ notification.message|truncatechars:40 }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="notification-status {% if notification.is_read %}read{% else %}unread{% endif %}">
+                                {% if notification.is_read %}Read{% else %}Unread{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ notification.created_at|date:"M d, Y H:i" }}</td>
+                        <td>
+                            <div class="notification-actions">
+                                <button onclick="viewNotification({{ notification.id }})" class="btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                {% if not notification.is_read %}
+                                <button onclick="markAsRead({{ notification.id }})" class="btn-sm btn-success">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                {% endif %}
+                                <button onclick="deleteNotification({{ notification.id }})" class="btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Pagination -->
+            {% if notifications.has_other_pages %}
+            <ul class="pagination">
+                {% if notifications.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ notifications.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a></li>
+                {% endif %}
+                {% for num in notifications.paginator.page_range %}
+                    {% if notifications.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > notifications.number|add:'-3' and num < notifications.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if notifications.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ notifications.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+            {% else %}
+            <div class="no-data">
+                <i class="fas fa-bell"></i>
+                <h5>No Notifications Found</h5>
+                <p>There are no notifications to display.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- View Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #0a4a2a; color: white;">
+                <h5 class="modal-title"><i class="fas fa-bell me-2"></i>Notification Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationModalContent">
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p class="mt-2">Loading notification...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Send Notification Modal -->
+<div class="modal fade" id="sendNotificationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #0a4a2a; color: white;">
+                <h5 class="modal-title"><i class="fas fa-bell me-2"></i>Send Notification</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="sendNotificationForm" method="POST" action="{% url 'dashboard:admin_notifications_send' %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Notification Type</label>
+                        <select name="type" class="form-select" required>
+                            <option value="system">System Notification</option>
+                            <option value="promotion">Promotion</option>
+                            <option value="order">Order Update</option>
+                            <option value="payment">Payment Update</option>
+                            <option value="product">Product Update</option>
+                            <option value="review">Review Notification</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Recipient</label>
+                        <select name="user_id" class="form-select">
+                            <option value="">All Users</option>
+                            {% for user in all_users %}
+                            <option value="{{ user.id }}">{{ user.full_name }} ({{ user.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea name="message" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Link (Optional)</label>
+                        <input type="text" name="link" class="form-control" placeholder="/products/ or /orders/">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-send">
+                        <i class="fas fa-paper-plane me-2"></i>Send Notification
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function viewNotification(notificationId) {
+        const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+        const content = document.getElementById('notificationModalContent');
+        content.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading notification...</p></div>';
+        modal.show();
+        
+        fetch(`/dashboard/admin/notifications/detail/${notificationId}/`)
+            .then(response => response.json())
+            .then(data => {
+                content.innerHTML = `
+                    <div class="mb-3">
+                        <p><strong>User:</strong> ${data.user_name}</p>
+                        <p><strong>Type:</strong> ${data.type_display}</p>
+                        <p><strong>Title:</strong> ${data.title}</p>
+                        <p><strong>Status:</strong> ${data.is_read ? 'Read' : 'Unread'}</p>
+                        <p><strong>Created:</strong> ${data.created_at}</p>
+                        ${data.link ? `<p><strong>Link:</strong> <a href="${data.link}" target="_blank">${data.link}</a></p>` : ''}
+                    </div>
+                    <hr>
+                    <div class="bg-light p-3 rounded">
+                        <strong>Message:</strong>
+                        <p class="mt-2" style="white-space: pre-wrap;">${data.message}</p>
+                    </div>
+                    ${data.metadata && Object.keys(data.metadata).length > 0 ? `
+                        <hr>
+                        <p><strong>Additional Data:</strong></p>
+                        <pre class="bg-light p-2 rounded" style="font-size: 0.8rem;">${JSON.stringify(data.metadata, null, 2)}</pre>
+                    ` : ''}
+                `;
+            })
+            .catch(error => {
+                content.innerHTML = `<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle fa-2x"></i><p>Failed to load notification.</p></div>`;
+            });
+    }
+    
+    function markAsRead(notificationId) {
+        if (!confirm('Mark this notification as read?')) return;
+        
+        fetch(`/dashboard/admin/notifications/${notificationId}/mark-read/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to mark as read. Please try again.');
+            }
+        })
+        .catch(() => {
+            alert('An error occurred. Please try again.');
+        });
+    }
+    
+    function deleteNotification(notificationId) {
+        if (!confirm('Are you sure you want to delete this notification?')) return;
+        
+        fetch(`/dashboard/admin/notifications/${notificationId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to delete notification. Please try again.');
+            }
+        })
+        .catch(() => {
+            alert('An error occurred. Please try again.');
+        });
+    }
+    
+    function openSendNotification() {
+        const modal = new bootstrap.Modal(document.getElementById('sendNotificationModal'));
+        modal.show();
+    }
+    
+    // Auto-close modal on success
+    document.getElementById('sendNotificationForm').addEventListener('submit', function(e) {
+        // The form will submit normally via POST
+        // The view will redirect back with a message
+    });
+</script>
+{% endblock %}
