@@ -48,44 +48,24 @@ echo "🗄️  Running database migrations..."
 
 if [[ "$DATABASE_TYPE" == "postgresql" ]]; then
     echo "   📌 Using PostgreSQL with DATABASE_URL"
-    
-    # For PostgreSQL, we need to handle migrations carefully
-    # First, try to create the migrations
     echo "   Creating migrations..."
     python manage.py makemigrations || true
-    
-    # Check if we need to fake migrations (for existing database)
-    echo "   Checking migration status..."
-    
-    # Try to migrate normally first
     echo "   Attempting to apply migrations..."
     if python manage.py migrate; then
         echo "   ✅ Migrations applied successfully"
     else
         echo "   ⚠️ Migration failed, trying to fake initial migrations..."
-        
-        # If migration fails, it might be due to existing tables
-        # Try to fake the migrations and then migrate
-        echo "   Faking initial migrations..."
         python manage.py migrate --fake || true
-        
         echo "   Running migrations again..."
         python manage.py migrate || true
-        
         echo "   ✅ Migrations completed"
     fi
-    
 else
-    # SQLite - simple migration
     echo "   📌 Using SQLite"
-    
-    # Delete the SQLite database file for fresh start
     echo "   Deleting existing SQLite database..."
     rm -f db.sqlite3
-    
     echo "   Creating migrations..."
     python manage.py makemigrations
-    
     echo "   Applying migrations..."
     python manage.py migrate
 fi
@@ -103,7 +83,6 @@ python manage.py collectstatic --noinput
 echo ""
 echo "🌱 Seeding database with demo data..."
 
-# Only seed if it's SQLite or if we're confident the database is fresh
 if [[ "$DATABASE_TYPE" == "sqlite" ]]; then
     echo "   Seeding SQLite database..."
     python manage.py seed_data || echo "   ⚠️ Seed data skipped (command not found)"
@@ -113,15 +92,14 @@ else
 fi
 
 # ============================================
-# CREATE SUPERUSER
+# CREATE SUPERUSER - UPDATED FOR YOUR USER MODEL
 # ============================================
 echo ""
 echo "👤 Creating superuser..."
 
 python manage.py shell << EOF
 from django.contrib.auth import get_user_model
-from apps.accounts.models import User, UserProfile
-
+from apps.accounts.models import UserProfile
 User = get_user_model()
 
 print("\n" + "="*50)
@@ -141,15 +119,19 @@ if not User.objects.filter(is_superuser=True).exists():
         password='Admin@123!',
         first_name='System',
         last_name='Administrator',
-        role='admin',
-        is_verified=True,
-        is_active=True
+        user_type='admin',          # From your USER_TYPES
+        is_email_verified=True,
+        is_active=True,
+        is_blocked=False,
+        is_banned=False
     )
+    # Create UserProfile for admin
     UserProfile.objects.get_or_create(user=admin)
     print("✅ Superuser created successfully!")
     print("   Username: admin")
     print("   Email: admin@ecommerce.go.ke")
     print("   Password: Admin@123!")
+    print("   User Type: admin")
 else:
     print("✅ Superuser already exists.")
     
@@ -157,6 +139,7 @@ else:
     try:
         admin = User.objects.get(username='admin')
         UserProfile.objects.get_or_create(user=admin)
+        print(f"✅ Admin user exists: {admin.email}")
     except User.DoesNotExist:
         pass
 
@@ -176,14 +159,19 @@ if not User.objects.filter(username='vendor').exists():
         password='Vendor@123',
         first_name='Vendor',
         last_name='User',
-        role='vendor',
-        is_verified=True,
-        is_active=True
+        user_type='vendor',
+        is_email_verified=True,
+        is_active=True,
+        is_blocked=False,
+        is_banned=False,
+        store_name='Vendor Store',
+        is_store_active=True
     )
     UserProfile.objects.get_or_create(user=vendor)
     print("✅ Vendor created!")
     print("   Username: vendor")
     print("   Password: Vendor@123")
+    print("   Store Name: Vendor Store")
 
 # Create Customer if not exists
 if not User.objects.filter(username='customer').exists():
@@ -194,16 +182,38 @@ if not User.objects.filter(username='customer').exists():
         password='Customer@123',
         first_name='Customer',
         last_name='User',
-        role='customer',
-        is_verified=True,
-        is_active=True
+        user_type='customer',
+        is_email_verified=True,
+        is_active=True,
+        is_blocked=False,
+        is_banned=False
     )
     UserProfile.objects.get_or_create(user=customer)
     print("✅ Customer created!")
     print("   Username: customer")
     print("   Password: Customer@123")
 
-# Create Staff Member if not exists
+# Create Moderator if not exists
+if not User.objects.filter(username='moderator').exists():
+    print("\nCreating Moderator...")
+    moderator = User.objects.create_user(
+        username='moderator',
+        email='moderator@ecommerce.go.ke',
+        password='Moderator@123',
+        first_name='Moderator',
+        last_name='User',
+        user_type='moderator',
+        is_email_verified=True,
+        is_active=True,
+        is_blocked=False,
+        is_banned=False
+    )
+    UserProfile.objects.get_or_create(user=moderator)
+    print("✅ Moderator created!")
+    print("   Username: moderator")
+    print("   Password: Moderator@123")
+
+# Create Staff Member if not exists (using customer type as staff)
 if not User.objects.filter(username='staff').exists():
     print("\nCreating Staff Member...")
     staff = User.objects.create_user(
@@ -212,32 +222,88 @@ if not User.objects.filter(username='staff').exists():
         password='Staff@123',
         first_name='Staff',
         last_name='User',
-        role='staff',
-        is_verified=True,
-        is_active=True
+        user_type='customer',
+        is_email_verified=True,
+        is_active=True,
+        is_blocked=False,
+        is_banned=False
     )
     UserProfile.objects.get_or_create(user=staff)
     print("✅ Staff Member created!")
     print("   Username: staff")
     print("   Password: Staff@123")
 
-# Create Store Manager if not exists
-if not User.objects.filter(username='storemanager').exists():
-    print("\nCreating Store Manager...")
-    storemanager = User.objects.create_user(
-        username='storemanager',
-        email='storemanager@ecommerce.go.ke',
-        password='StoreManager@123',
-        first_name='Store',
-        last_name='Manager',
-        role='store_manager',
-        is_verified=True,
-        is_active=True
-    )
-    UserProfile.objects.get_or_create(user=storemanager)
-    print("✅ Store Manager created!")
-    print("   Username: storemanager")
-    print("   Password: StoreManager@123")
+# ============================================
+# CREATE DEFAULT ADDRESS FOR USERS (Optional)
+# ============================================
+print("\n" + "="*50)
+print("  CREATING DEFAULT ADDRESSES")
+print("="*50)
+
+from apps.accounts.models import Address
+
+# Add default address for admin
+try:
+    admin_user = User.objects.get(username='admin')
+    if not Address.objects.filter(user=admin_user, is_default=True).exists():
+        Address.objects.create(
+            user=admin_user,
+            address_type='both',
+            address_line1='Government Procurement HQ',
+            address_line2='Nairobi City Centre',
+            city='Nairobi',
+            state='Nairobi County',
+            country='Kenya',
+            postal_code='00100',
+            phone_number='+254700123456',
+            is_default=True,
+            is_active=True
+        )
+        print("✅ Default address added for admin")
+except User.DoesNotExist:
+    pass
+
+# Add default address for vendor
+try:
+    vendor_user = User.objects.get(username='vendor')
+    if not Address.objects.filter(user=vendor_user, is_default=True).exists():
+        Address.objects.create(
+            user=vendor_user,
+            address_type='both',
+            address_line1='Vendor Store Location',
+            address_line2='Industrial Area',
+            city='Nairobi',
+            state='Nairobi County',
+            country='Kenya',
+            postal_code='00200',
+            phone_number='+254722123456',
+            is_default=True,
+            is_active=True
+        )
+        print("✅ Default address added for vendor")
+except User.DoesNotExist:
+    pass
+
+# Add default address for customer
+try:
+    customer_user = User.objects.get(username='customer')
+    if not Address.objects.filter(user=customer_user, is_default=True).exists():
+        Address.objects.create(
+            user=customer_user,
+            address_type='both',
+            address_line1='Customer Home Address',
+            address_line2='Westlands',
+            city='Nairobi',
+            state='Nairobi County',
+            country='Kenya',
+            postal_code='00100',
+            phone_number='+254733123456',
+            is_default=True,
+            is_active=True
+        )
+        print("✅ Default address added for customer")
+except User.DoesNotExist:
+    pass
 
 # ============================================
 # SUMMARY
@@ -249,22 +315,28 @@ print("")
 print("🔑 ADMIN (Full System Access)")
 print("   Username: admin")
 print("   Password: Admin@123!")
+print("   Email: admin@ecommerce.go.ke")
 print("")
 print("🏪 VENDOR (Product Management)")
 print("   Username: vendor")
 print("   Password: Vendor@123")
+print("   Email: vendor@ecommerce.go.ke")
+print("   Store: Vendor Store")
 print("")
 print("👤 CUSTOMER (Shopping Access)")
 print("   Username: customer")
 print("   Password: Customer@123")
+print("   Email: customer@ecommerce.go.ke")
+print("")
+print("🛡️ MODERATOR (Content Moderation)")
+print("   Username: moderator")
+print("   Password: Moderator@123")
+print("   Email: moderator@ecommerce.go.ke")
 print("")
 print("👔 STAFF (Order Management)")
 print("   Username: staff")
 print("   Password: Staff@123")
-print("")
-print("📋 STORE MANAGER (Store Operations)")
-print("   Username: storemanager")
-print("   Password: StoreManager@123")
+print("   Email: staff@ecommerce.go.ke")
 print("")
 print("="*50)
 print("  BUILD COMPLETED SUCCESSFULLY!")
@@ -275,10 +347,10 @@ echo ""
 echo "✅ E-Commerce Platform build completed successfully!"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  🚀 Visit your site at: https://your-ecommerce-site.onrender.com"
-echo "  🔑 Admin Login: https://your-ecommerce-site.onrender.com/admin/"
-echo "  📊 Admin Dashboard: https://your-ecommerce-site.onrender.com/dashboard/admin/"
-echo "  🏪 Vendor Dashboard: https://your-ecommerce-site.onrender.com/dashboard/vendor/"
-echo "  👤 User Login: https://your-ecommerce-site.onrender.com/accounts/login/"
-echo "  🛒 Browse Products: https://your-ecommerce-site.onrender.com/products/"
+echo "  🚀 Visit your site at: https://ecommerce-qdwv.onrender.com"
+echo "  🔑 Admin Login: https://ecommerce-qdwv.onrender.com/admin/"
+echo "  📊 Admin Dashboard: https://ecommerce-qdwv.onrender.com/dashboard/admin/"
+echo "  🏪 Vendor Dashboard: https://ecommerce-qdwv.onrender.com/dashboard/vendor/"
+echo "  👤 User Login: https://ecommerce-qdwv.onrender.com/accounts/login/"
+echo "  🛒 Browse Products: https://ecommerce-qdwv.onrender.com/products/"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
