@@ -167,23 +167,33 @@ class UserRegistrationForm(UserCreationForm):
             user.save()
         return user
 
+
+# ============================================
+# FIXED: UserLoginForm with id attributes
+# ============================================
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Username or Email'
+            'placeholder': 'Username or Email',
+            'id': 'id_username'  # ✅ ADDED - Critical for JavaScript
         })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Password'
+            'placeholder': 'Password',
+            'id': 'id_password'  # ✅ ADDED - Critical for JavaScript
         })
     )
     remember_me = forms.BooleanField(
         required=False,
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+            'id': 'remember_me'  # ✅ ADDED - Critical for JavaScript
+        })
     )
+
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -212,6 +222,7 @@ class UserProfileForm(forms.ModelForm):
             raise ValidationError('This email is already registered.')
         return email
 
+
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
@@ -235,6 +246,7 @@ class AddressForm(forms.ModelForm):
             raise ValidationError('Phone number must start with +')
         return phone
 
+
 class VendorProfileForm(forms.ModelForm):
     """Form for vendors to update their store information"""
     class Meta:
@@ -253,6 +265,7 @@ class VendorProfileForm(forms.ModelForm):
             'bank_name': forms.TextInput(attrs={'class': 'form-control'}),
             'is_store_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
 
 class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(
@@ -278,6 +291,7 @@ class ChangePasswordForm(forms.Form):
         
         return cleaned_data
 
+
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'})
@@ -288,6 +302,7 @@ class ForgotPasswordForm(forms.Form):
         if not User.objects.filter(email=email).exists():
             raise ValidationError('No user found with this email address.')
         return email
+
 
 class ResetPasswordForm(forms.Form):
     new_password = forms.CharField(
@@ -309,6 +324,7 @@ class ResetPasswordForm(forms.Form):
             raise ValidationError('Password must be at least 8 characters.')
         
         return cleaned_data
+
 
 class VendorRegistrationForm(forms.ModelForm):
     """Standalone form for existing users to become vendors"""
