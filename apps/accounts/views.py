@@ -92,16 +92,42 @@ def user_login(request):
     if request.method == 'POST':
         form = UserLoginForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            username_or_email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            remember_me = form.cleaned_data.get('remember_me', False)  # Add this line
+            
+            # Check if it's an email or username
+            if '@' in username_or_email:
+                try:
+                    user = User.objects.get(email=username_or_email)
+                    username = user.username
+                except User.DoesNotExist:
+                    username = username_or_email
+            else:
+                username = username_or_email
+            
+            # Authenticate with username
+            user = authenticate(request, username=username, password=password)
             
             if user is not None:
+                # Check if account is locked
                 if user.locked_until and user.locked_until > timezone.now():
                     messages.error(request, f'Account locked. Try again after {user.locked_until.strftime("%H:%M")}')
                     return render(request, 'accounts/login.html', {'form': form})
                 
+                # Check if account is blocked or banned
+                if user.is_blocked or user.is_banned:
+                    messages.error(request, 'Your account has been blocked or banned. Please contact support.')
+                    return render(request, 'accounts/login.html', {'form': form})
+                
                 login(request, user)
+                
+                # Set session expiry based on remember_me
+                if not remember_me:
+                    request.session.set_expiry(0)  # Session expires when browser closes
+                else:
+                    request.session.set_expiry(1209600)  # 2 weeks
+                
                 user.failed_login_attempts = 0
                 user.last_login_ip = request.META.get('REMOTE_ADDR')
                 user.save()
@@ -114,6 +140,7 @@ def user_login(request):
                     return redirect(next_page)
                 return redirect('products:home')
             else:
+                # Try to find user to increment attempts
                 try:
                     user = User.objects.get(username=username)
                     user.failed_login_attempts += 1
