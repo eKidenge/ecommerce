@@ -1,0 +1,545 @@
+{% load static %}
+<header class="header bg-primary-green text-white border-bottom border-gold">
+    <div class="container py-3">
+        <div class="row align-items-center g-3">
+            <!-- Logo -->
+            <div class="col-md-3 col-6">
+                <a href="{% url 'products:home' %}" class="text-decoration-none d-flex align-items-center">
+                    <img src="{% static 'images/ecommerce.png' %}" alt="National E-Procurement Portal Logo" height="55" class="me-2">
+                    <div>
+                        <h1 class="mb-0 text-white fw-bold gov-title" style="font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 3px; font-size: 1.8rem; line-height: 1;">
+                            E-STORE
+                        </h1>
+                        <div class="gov-subtitle-wrapper mt-1">
+                            <span class="text-gold gov-subtitle" style="font-family: 'Merriweather', serif; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; display: block; border-top: 2px solid rgba(201, 168, 76, 0.3); padding-top: 3px;">
+                                ⚜ NATIONAL E-PROCUREMENT PORTAL ⚜
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Search -->
+            <div class="col-md-5 d-none d-md-block">
+                <form action="{% url 'products:search' %}" method="get" class="d-flex">
+                    <input type="search" name="q" class="form-control form-control-lg gov-search" 
+                           style="border-radius: 0; border: 2px solid var(--gov-gold); background: rgba(255,255,255,0.95); font-family: 'Merriweather', serif; font-weight: 400; letter-spacing: 0.5px;"
+                           placeholder="SEARCH TENDERS & PROCUREMENT LISTINGS..." value="{{ request.GET.q }}">
+                    <button type="submit" class="btn gov-search-btn" 
+                            style="background: var(--gov-gold); color: var(--gov-green-dark); border-radius: 0; border: 2px solid var(--gov-gold); font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; letter-spacing: 1px; padding: 0 1.5rem;">
+                        <i class="fas fa-search me-1"></i> SEARCH
+                    </button>
+                </form>
+            </div>
+            
+            <!-- User Actions -->
+            <div class="col-md-4 col-6">
+                <div class="d-flex justify-content-end align-items-center gap-3">
+                    <!-- Wishlist -->
+                    <a href="{% url 'wishlist:view' %}" class="text-white position-relative gov-action-link" style="text-decoration: none; font-family: 'Merriweather', serif; font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px;">
+                        <i class="fas fa-heart fa-lg"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill gov-badge" 
+                              style="background: var(--gov-gold); color: var(--gov-green-dark); font-weight: 900; font-family: 'Merriweather', serif; font-size: 0.55rem; border: 2px solid var(--gov-green-dark);">
+                            {{ wishlist_count|default:0 }}
+                        </span>
+                        <span class="d-none d-md-inline ms-1">WATCHLIST</span>
+                    </a>
+                    
+                    <!-- Cart -->
+                    <a href="{% url 'cart:view' %}" class="text-white position-relative gov-action-link" style="text-decoration: none; font-family: 'Merriweather', serif; font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px;">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill gov-badge" 
+                              style="background: var(--gov-gold); color: var(--gov-green-dark); font-weight: 900; font-family: 'Merriweather', serif; font-size: 0.55rem; border: 2px solid var(--gov-green-dark);">
+                            {{ cart_total_items|default:0 }}
+                        </span>
+                        <span class="d-none d-md-inline ms-1">CART</span>
+                    </a>
+                    
+                    <!-- User Menu -->
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-link text-white dropdown-toggle p-0 gov-user-btn" data-bs-toggle="dropdown" 
+                                    style="text-decoration: none; font-family: 'Merriweather', serif; font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px;">
+                                <i class="fas fa-user-circle fa-2x me-1"></i>
+                                <span class="d-none d-md-inline">{{ user.full_name|truncatechars:12 }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg gov-dropdown" 
+                                style="border: 3px solid var(--gov-gold); border-radius: 0; padding: 0.5rem; min-width: 260px; background: white;">
+                                <li><span class="dropdown-item-text fw-bold gov-dropdown-header" style="font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; color: var(--gov-green); border-bottom: 2px solid var(--gov-gold); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-user-shield me-2" style="color: var(--gov-gold);"></i>
+                                    {{ user.full_name|upper }}
+                                </span></li>
+                                <li><span class="dropdown-item-text text-muted small gov-dropdown-sub" style="font-family: 'Merriweather', serif; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gov-border);">
+                                    {{ user.email }}
+                                </span></li>
+                                <li><hr class="dropdown-divider" style="border-color: var(--gov-gold); opacity: 0.3;"></li>
+                                <li>
+                                    <a class="dropdown-item gov-dropdown-item" href="{% url 'dashboard:customer_dashboard' %}" style="font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; border-radius: 0;">
+                                        <i class="fas fa-tachometer-alt me-2" style="color: var(--gov-gold); width: 20px; text-align: center;"></i>DASHBOARD
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item gov-dropdown-item" href="{% url 'accounts:profile' %}" style="font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; border-radius: 0;">
+                                        <i class="fas fa-user me-2" style="color: var(--gov-gold); width: 20px; text-align: center;"></i>PROFILE
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item gov-dropdown-item" href="{% url 'orders:order_history' %}" style="font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; border-radius: 0;">
+                                        <i class="fas fa-box me-2" style="color: var(--gov-gold); width: 20px; text-align: center;"></i>ORDERS
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item gov-dropdown-item" href="{% url 'wishlist:view' %}" style="font-weight: 700; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; border-radius: 0;">
+                                        <i class="fas fa-heart me-2" style="color: var(--gov-gold); width: 20px; text-align: center;"></i>WATCHLIST
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" style="border-color: var(--gov-gold); opacity: 0.3;"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger gov-dropdown-item gov-dropdown-logout" href="{% url 'accounts:logout' %}" style="font-weight: 900; font-family: 'Merriweather', serif; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; border-radius: 0;">
+                                        <i class="fas fa-sign-out-alt me-2"></i>SIGN OUT
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn gov-btn-outline btn-sm px-4" 
+                           style="border: 2px solid var(--gov-gold); color: var(--gov-gold); font-weight: 700; border-radius: 0; font-family: 'Merriweather', serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.7rem; transition: all 0.3s ease;">
+                            <i class="fas fa-sign-in-alt me-1"></i>SIGN IN
+                        </a>
+                        <a href="{% url 'accounts:register' %}" class="btn gov-btn-primary btn-sm px-4" 
+                           style="background: var(--gov-gold); color: var(--gov-green-dark); font-weight: 700; border: 2px solid var(--gov-gold); border-radius: 0; font-family: 'Merriweather', serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.7rem; transition: all 0.3s ease;">
+                            <i class="fas fa-user-plus me-1"></i>REGISTER
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* Government-style fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Merriweather:wght@300;400;700;900&display=swap');
+    
+    :root {
+        --gov-green: #0a4a2a;
+        --gov-green-dark: #052a18;
+        --gov-green-light: #1a6a3a;
+        --gov-gold: #c9a84c;
+        --gov-gold-light: #f5edd6;
+        --gov-gold-dark: #a88a3a;
+        --gov-cream: #faf8f0;
+        --gov-border: #8a7a5a;
+    }
+    
+    .header {
+        background: linear-gradient(135deg, #0a4a2a 0%, #052a18 50%, #0a4a2a 100%);
+        border-bottom: 4px solid var(--gov-gold) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        position: relative;
+    }
+    
+    /* Official seal watermark */
+    .header::before {
+        content: '⚜';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 180px;
+        color: rgba(201, 168, 76, 0.04);
+        pointer-events: none;
+        font-family: 'Times New Roman', serif;
+        letter-spacing: 20px;
+    }
+    
+    .bg-primary-green {
+        background: linear-gradient(135deg, #0a4a2a 0%, #052a18 50%, #0a4a2a 100%);
+    }
+    
+    .border-gold {
+        border-bottom: 4px solid var(--gov-gold) !important;
+    }
+    
+    .text-gold {
+        color: var(--gov-gold) !important;
+    }
+    
+    /* Government Title Styles - NOW VISIBLE */
+    .gov-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        color: white !important;
+        line-height: 1;
+        font-size: 1.8rem !important;
+    }
+    
+    .gov-subtitle-wrapper {
+        display: block !important;
+        margin-top: 2px !important;
+    }
+    
+    .gov-subtitle {
+        font-family: 'Merriweather', serif !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 3px !important;
+        color: var(--gov-gold) !important;
+        font-size: 0.7rem !important;
+        display: block !important;
+        border-top: 2px solid rgba(201, 168, 76, 0.3) !important;
+        padding-top: 4px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        line-height: 1.4 !important;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Search Styles - Official */
+    .gov-search {
+        border-radius: 0 !important;
+        border: 2px solid var(--gov-gold) !important;
+        background: rgba(255,255,255,0.95) !important;
+        font-family: 'Merriweather', serif !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.5px !important;
+        padding: 0.75rem 1rem !important;
+        height: auto !important;
+    }
+    
+    .gov-search:focus {
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.3) !important;
+        border-color: var(--gov-gold) !important;
+        background: white !important;
+    }
+    
+    .gov-search::placeholder {
+        font-family: 'Merriweather', serif;
+        font-weight: 300;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+        color: #999;
+    }
+    
+    .gov-search-btn {
+        background: var(--gov-gold) !important;
+        color: var(--gov-green-dark) !important;
+        border-radius: 0 !important;
+        border: 2px solid var(--gov-gold) !important;
+        font-weight: 700 !important;
+        font-family: 'Merriweather', serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        padding: 0 2rem !important;
+        transition: all 0.3s ease !important;
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+    }
+    
+    .gov-search-btn:hover {
+        background: var(--gov-gold-dark) !important;
+        border-color: var(--gov-gold-dark) !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+    
+    /* Action Links */
+    .gov-action-link {
+        font-family: 'Merriweather', serif !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 0.65rem !important;
+        letter-spacing: 1.5px !important;
+        color: rgba(255,255,255,0.85) !important;
+        transition: all 0.3s ease !important;
+        position: relative;
+    }
+    
+    .gov-action-link:hover {
+        color: var(--gov-gold) !important;
+        transform: translateY(-2px);
+    }
+    
+    .gov-action-link .fa-lg {
+        font-size: 1.4rem !important;
+    }
+    
+    /* Badge */
+    .gov-badge {
+        background: var(--gov-gold) !important;
+        color: var(--gov-green-dark) !important;
+        font-weight: 900 !important;
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.55rem !important;
+        border: 2px solid var(--gov-green-dark) !important;
+        border-radius: 0 !important;
+        padding: 0.15rem 0.5rem !important;
+        letter-spacing: 0.5px !important;
+    }
+    
+    /* User Button */
+    .gov-user-btn {
+        font-family: 'Merriweather', serif !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 0.65rem !important;
+        letter-spacing: 1.5px !important;
+        color: rgba(255,255,255,0.85) !important;
+    }
+    
+    .gov-user-btn:hover {
+        color: var(--gov-gold) !important;
+    }
+    
+    /* Dropdown */
+    .gov-dropdown {
+        border: 3px solid var(--gov-gold) !important;
+        border-radius: 0 !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
+        padding: 0.5rem !important;
+        min-width: 260px !important;
+        background: white !important;
+        margin-top: 10px !important;
+    }
+    
+    .gov-dropdown::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid var(--gov-gold);
+    }
+    
+    .gov-dropdown-header {
+        font-family: 'Playfair Display', serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-size: 0.85rem !important;
+        color: var(--gov-green) !important;
+        border-bottom: 2px solid var(--gov-gold) !important;
+        padding-bottom: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
+        font-weight: 900 !important;
+    }
+    
+    .gov-dropdown-sub {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.6rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        color: var(--gov-border) !important;
+        font-weight: 400 !important;
+        padding-top: 0 !important;
+    }
+    
+    .gov-dropdown-item {
+        font-weight: 700 !important;
+        font-family: 'Merriweather', serif !important;
+        text-transform: uppercase !important;
+        font-size: 0.7rem !important;
+        letter-spacing: 0.5px !important;
+        border-radius: 0 !important;
+        padding: 0.6rem 1rem !important;
+        transition: all 0.2s ease !important;
+        color: #212529 !important;
+        border-left: 3px solid transparent !important;
+    }
+    
+    .gov-dropdown-item:hover {
+        background: var(--gov-cream) !important;
+        color: var(--gov-green) !important;
+        transform: translateX(5px);
+        border-left-color: var(--gov-gold) !important;
+    }
+    
+    .gov-dropdown-item i {
+        width: 22px !important;
+        text-align: center !important;
+        color: var(--gov-gold) !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .gov-dropdown-logout {
+        color: #8b1a1a !important;
+        font-weight: 900 !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .gov-dropdown-logout:hover {
+        background: #f5e6e6 !important;
+        color: #8b1a1a !important;
+        border-left-color: #8b1a1a !important;
+    }
+    
+    .gov-dropdown-logout i {
+        color: #8b1a1a !important;
+    }
+    
+    /* Government Buttons */
+    .gov-btn-primary {
+        background: var(--gov-gold) !important;
+        color: var(--gov-green-dark) !important;
+        font-weight: 700 !important;
+        border: 2px solid var(--gov-gold) !important;
+        border-radius: 0 !important;
+        font-family: 'Merriweather', serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-size: 0.7rem !important;
+        transition: all 0.3s ease !important;
+        padding: 0.5rem 1.25rem !important;
+    }
+    
+    .gov-btn-primary:hover {
+        background: var(--gov-gold-dark) !important;
+        border-color: var(--gov-gold-dark) !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+    
+    .gov-btn-outline {
+        border: 2px solid var(--gov-gold) !important;
+        color: var(--gov-gold) !important;
+        font-weight: 700 !important;
+        border-radius: 0 !important;
+        font-family: 'Merriweather', serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-size: 0.7rem !important;
+        transition: all 0.3s ease !important;
+        padding: 0.5rem 1.25rem !important;
+        background: transparent !important;
+    }
+    
+    .gov-btn-outline:hover {
+        background: var(--gov-gold) !important;
+        color: var(--gov-green-dark) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.2);
+    }
+    
+    /* Shimmer Animation for Gold Border */
+    @keyframes govShimmer {
+        0% { background-position: -300% center; }
+        100% { background-position: 300% center; }
+    }
+    
+    .header .border-gold {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .header .border-gold::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--gov-gold) 15%, 
+            var(--gov-gold-light) 30%, 
+            var(--gov-gold) 50%, 
+            var(--gov-gold-light) 70%, 
+            var(--gov-gold) 85%, 
+            transparent 100%
+        );
+        background-size: 300% 100%;
+        animation: govShimmer 5s ease-in-out infinite;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .header .container {
+            padding: 0.5rem 0;
+        }
+        
+        .gov-title {
+            font-size: 1.3rem !important;
+            letter-spacing: 2px !important;
+        }
+        
+        .gov-subtitle {
+            font-size: 0.5rem !important;
+            letter-spacing: 2px !important;
+        }
+        
+        .gov-action-link {
+            font-size: 0.5rem !important;
+            letter-spacing: 1px !important;
+        }
+        
+        .gov-action-link .fa-lg {
+            font-size: 1.1rem !important;
+        }
+        
+        .gov-btn-primary,
+        .gov-btn-outline {
+            font-size: 0.55rem !important;
+            padding: 0.3rem 0.8rem !important;
+            letter-spacing: 1px !important;
+        }
+        
+        .header .badge {
+            font-size: 0.45rem !important;
+            padding: 0.1rem 0.3rem !important;
+        }
+        
+        .gov-user-btn {
+            font-size: 0.5rem !important;
+        }
+        
+        .gov-user-btn .fa-2x {
+            font-size: 1.5rem !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .gov-title {
+            font-size: 1rem !important;
+            letter-spacing: 1.5px !important;
+        }
+        
+        .gov-subtitle {
+            font-size: 0.4rem !important;
+            letter-spacing: 1.5px !important;
+        }
+        
+        .header .container .row .col-6:first-child {
+            flex: 0 0 60% !important;
+            max-width: 60% !important;
+        }
+        
+        .header .container .row .col-6:last-child {
+            flex: 0 0 40% !important;
+            max-width: 40% !important;
+        }
+        
+        .gov-action-link .fa-lg {
+            font-size: 0.9rem !important;
+        }
+        
+        .gov-btn-primary,
+        .gov-btn-outline {
+            font-size: 0.45rem !important;
+            padding: 0.2rem 0.5rem !important;
+            letter-spacing: 0.5px !important;
+        }
+        
+        .header .badge {
+            font-size: 0.4rem !important;
+            padding: 0.05rem 0.25rem !important;
+        }
+    }
+</style>

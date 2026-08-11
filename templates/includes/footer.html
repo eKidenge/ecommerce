@@ -1,0 +1,495 @@
+{% load static %}
+<footer class="footer bg-dark-green text-white pt-5 pb-3 mt-5 border-top-gold">
+    <div class="container">
+        <!-- Official Government Seal Strip -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <div class="gov-seal-strip">
+                    <span class="gov-seal-icon">⚜</span>
+                    <span class="gov-seal-text">REPUBLIC OF KENYA — NATIONAL E-PROCUREMENT PORTAL</span>
+                    <span class="gov-seal-icon">⚜</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- About - Government Style -->
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{% static 'images/ecommerce.png' %}" alt="National E-Procurement Portal Logo" height="45" class="me-2">
+                    <div>
+                        <h5 class="text-white mb-0 gov-footer-title" style="font-family: 'Playfair Display', serif; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;">
+                            E-STORE
+                        </h5>
+                        <small class="text-gold gov-footer-sub" style="font-family: 'Merriweather', serif; font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; display: block; border-top: 1px solid rgba(201, 168, 76, 0.3); padding-top: 2px;">
+                            OFFICIAL PROCUREMENT PLATFORM
+                        </small>
+                    </div>
+                </div>
+                <p class="text-white-50 gov-footer-text" style="font-family: 'Merriweather', serif; font-size: 0.85rem; line-height: 1.8; letter-spacing: 0.3px;">
+                    Official government procurement platform for transparent, efficient, and secure public procurement of goods and services. Fully compliant with PPRA regulations and government procurement policies.
+                </p>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="#" class="btn gov-social-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 2px solid #c9a84c; color: #c9a84c; transition: all 0.3s ease; border-radius: 0; background: transparent;">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="btn gov-social-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 2px solid #c9a84c; color: #c9a84c; transition: all 0.3s ease; border-radius: 0; background: transparent;">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="btn gov-social-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 2px solid #c9a84c; color: #c9a84c; transition: all 0.3s ease; border-radius: 0; background: transparent;">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="btn gov-social-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 2px solid #c9a84c; color: #c9a84c; transition: all 0.3s ease; border-radius: 0; background: transparent;">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="#" class="btn gov-social-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 2px solid #c9a84c; color: #c9a84c; transition: all 0.3s ease; border-radius: 0; background: transparent;">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Quick Links - Official -->
+            <div class="col-lg-2 col-md-6">
+                <h6 class="text-gold mb-3 gov-footer-heading" style="font-family: 'Merriweather', serif; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem; color: #c9a84c; border-bottom: 2px solid rgba(201, 168, 76, 0.3); padding-bottom: 0.5rem;">
+                    <i class="fas fa-link me-2"></i>QUICK LINKS
+                </h6>
+                <ul class="list-unstyled gov-footer-list" style="font-family: 'Merriweather', serif;">
+                    <li class="mb-2"><a href="{% url 'products:product_list' %}" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">BROWSE TENDERS</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">ABOUT PPRA</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">CONTACT US</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">PROCUREMENT NEWS</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">SUPPLIER REGISTRATION</a></li>
+                </ul>
+            </div>
+            
+            <!-- Customer Service - Official -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="text-gold mb-3 gov-footer-heading" style="font-family: 'Merriweather', serif; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem; color: #c9a84c; border-bottom: 2px solid rgba(201, 168, 76, 0.3); padding-bottom: 0.5rem;">
+                    <i class="fas fa-headset me-2"></i>OFFICIAL SERVICES
+                </h6>
+                <ul class="list-unstyled gov-footer-list" style="font-family: 'Merriweather', serif;">
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">PROCUREMENT POLICY</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">RETURNS & REFUNDS</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">PRIVACY POLICY</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">TERMS & CONDITIONS</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none gov-footer-link" style="transition: all 0.3s ease; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">PROCUREMENT FAQ</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contact Info - Official -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="text-gold mb-3 gov-footer-heading" style="font-family: 'Merriweather', serif; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem; color: #c9a84c; border-bottom: 2px solid rgba(201, 168, 76, 0.3); padding-bottom: 0.5rem;">
+                    <i class="fas fa-address-card me-2"></i>OFFICIAL CONTACT
+                </h6>
+                <ul class="list-unstyled text-white-50 gov-footer-contact" style="font-family: 'Merriweather', serif; font-size: 0.8rem; letter-spacing: 0.3px;">
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fas fa-map-marker-alt me-2 mt-1" style="color: #c9a84c; width: 18px;"></i>
+                        <span>National Procurement HQ<br>Nairobi, Republic of Kenya</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-phone me-2" style="color: #c9a84c; width: 18px;"></i>
+                        <span>+254 (020) 123-4567</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-envelope me-2" style="color: #c9a84c; width: 18px;"></i>
+                        <span>procurement@estore.go.ke</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-clock me-2" style="color: #c9a84c; width: 18px;"></i>
+                        <span>Mon-Fri: 08:00 - 17:00 EAT</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <hr class="border-gold mt-4" style="border-color: #c9a84c !important; opacity: 0.2;">
+        
+        <!-- Bottom Footer - Government Style -->
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="text-white-50 mb-0 gov-footer-copyright" style="font-family: 'Merriweather', serif; font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                    &copy; {% now "Y" %} <span class="text-gold">REPUBLIC OF KENYA</span> — NATIONAL E-PROCUREMENT PORTAL. ALL RIGHTS RESERVED.
+                </p>
+                <p class="text-white-50 mb-0 gov-footer-ppra" style="font-family: 'Merriweather', serif; font-size: 0.6rem; letter-spacing: 1px; opacity: 0.6; margin-top: 2px;">
+                    PPRA COMPLIANT | ISO 9001:2015 CERTIFIED | GOVERNMENT OF KENYA
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <span class="text-white-50 me-3 gov-footer-payment-label" style="font-family: 'Merriweather', serif; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Approved Payment Methods:</span>
+                <i class="fab fa-cc-visa fa-2x text-white-50 me-2 gov-payment-icon" title="Visa"></i>
+                <i class="fab fa-cc-mastercard fa-2x text-white-50 me-2 gov-payment-icon" title="Mastercard"></i>
+                <i class="fab fa-cc-amex fa-2x text-white-50 me-2 gov-payment-icon" title="American Express"></i>
+                <i class="fab fa-cc-paypal fa-2x text-white-50 me-2 gov-payment-icon" title="PayPal"></i>
+                <i class="fab fa-cc-stripe fa-2x text-white-50 me-2 gov-payment-icon" title="Stripe"></i>
+                <i class="fas fa-mobile-alt fa-2x text-white-50 gov-payment-icon" title="M-Pesa"></i>
+            </div>
+        </div>
+        
+        <!-- Official Government Footer Strip -->
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <div class="gov-footer-strip">
+                    <span class="text-white-50" style="font-family: 'Merriweather', serif; font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase;">
+                        ⚜ THIS PORTAL IS OPERATED BY THE NATIONAL PROCUREMENT AUTHORITY — REPUBLIC OF KENYA ⚜
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    /* Government Footer Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Merriweather:wght@300;400;700;900&display=swap');
+    
+    .footer {
+        background: linear-gradient(135deg, #052a18 0%, #0a4a2a 50%, #052a18 100%);
+        border-top: 4px solid #c9a84c;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+        position: relative;
+    }
+    
+    /* Official seal watermark */
+    .footer::before {
+        content: '⚜';
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%, 50%);
+        font-size: 300px;
+        color: rgba(201, 168, 76, 0.03);
+        pointer-events: none;
+        font-family: 'Times New Roman', serif;
+        letter-spacing: 30px;
+    }
+    
+    .bg-dark-green {
+        background: linear-gradient(135deg, #052a18 0%, #0a4a2a 50%, #052a18 100%);
+    }
+    
+    .border-top-gold {
+        border-top: 4px solid #c9a84c !important;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Gold shimmer animation for top border */
+    @keyframes govShimmerFooter {
+        0% { background-position: -300% center; }
+        100% { background-position: 300% center; }
+    }
+    
+    .border-top-gold::after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #c9a84c 15%, 
+            #f5edd6 30%, 
+            #c9a84c 50%, 
+            #f5edd6 70%, 
+            #c9a84c 85%, 
+            transparent 100%
+        );
+        background-size: 300% 100%;
+        animation: govShimmerFooter 6s ease-in-out infinite;
+    }
+    
+    /* Government Seal Strip */
+    .gov-seal-strip {
+        background: rgba(201, 168, 76, 0.08);
+        border: 2px solid rgba(201, 168, 76, 0.15);
+        padding: 0.6rem 1rem;
+        text-align: center;
+        border-left: none;
+        border-right: none;
+        letter-spacing: 2px;
+    }
+    
+    .gov-seal-icon {
+        color: #c9a84c;
+        font-size: 1.2rem;
+        margin: 0 0.75rem;
+        opacity: 0.6;
+    }
+    
+    .gov-seal-text {
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+        color: rgba(255,255,255,0.8);
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+    
+    /* Footer Title */
+    .gov-footer-title {
+        font-family: 'Playfair Display', serif !important;
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 3px !important;
+        color: white !important;
+        line-height: 1.1 !important;
+        font-size: 1.3rem !important;
+    }
+    
+    .gov-footer-sub {
+        font-family: 'Merriweather', serif !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important;
+        color: #c9a84c !important;
+        font-size: 0.5rem !important;
+        display: block !important;
+        border-top: 1px solid rgba(201, 168, 76, 0.3) !important;
+        padding-top: 3px !important;
+        opacity: 0.8 !important;
+    }
+    
+    .gov-footer-text {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.8rem !important;
+        line-height: 1.8 !important;
+        letter-spacing: 0.3px !important;
+        color: rgba(255,255,255,0.7) !important;
+    }
+    
+    /* Footer Headings */
+    .gov-footer-heading {
+        font-family: 'Merriweather', serif !important;
+        font-weight: 900 !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
+        font-size: 0.7rem !important;
+        color: #c9a84c !important;
+        border-bottom: 2px solid rgba(201, 168, 76, 0.2) !important;
+        padding-bottom: 0.5rem !important;
+    }
+    
+    /* Footer Links */
+    .gov-footer-link {
+        font-family: 'Merriweather', serif !important;
+        font-weight: 400 !important;
+        font-size: 0.7rem !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        color: rgba(255,255,255,0.6) !important;
+        transition: all 0.3s ease !important;
+        border-left: 2px solid transparent !important;
+        padding-left: 0.5rem !important;
+        display: inline-block !important;
+    }
+    
+    .gov-footer-link:hover {
+        color: #c9a84c !important;
+        border-left-color: #c9a84c !important;
+        padding-left: 0.8rem !important;
+        transform: translateX(5px);
+    }
+    
+    .gov-footer-list li {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Footer Contact */
+    .gov-footer-contact {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.75rem !important;
+        letter-spacing: 0.3px !important;
+        color: rgba(255,255,255,0.7) !important;
+    }
+    
+    .gov-footer-contact i {
+        width: 20px !important;
+        color: #c9a84c !important;
+    }
+    
+    /* Social Buttons */
+    .gov-social-btn {
+        border: 2px solid #c9a84c !important;
+        color: #c9a84c !important;
+        transition: all 0.3s ease !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .gov-social-btn:hover {
+        background: #c9a84c !important;
+        color: #0a4a2a !important;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+    
+    /* Copyright */
+    .gov-footer-copyright {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.7rem !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        color: rgba(255,255,255,0.6) !important;
+    }
+    
+    .gov-footer-copyright .text-gold {
+        color: #c9a84c !important;
+    }
+    
+    .gov-footer-ppra {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.55rem !important;
+        letter-spacing: 1.5px !important;
+        opacity: 0.4 !important;
+        color: rgba(255,255,255,0.5) !important;
+        text-transform: uppercase !important;
+    }
+    
+    /* Payment Icons */
+    .gov-payment-icon {
+        font-size: 1.6rem !important;
+        transition: all 0.3s ease !important;
+        cursor: default !important;
+        opacity: 0.6 !important;
+    }
+    
+    .gov-payment-icon:hover {
+        color: #c9a84c !important;
+        transform: scale(1.1) !important;
+        opacity: 1 !important;
+    }
+    
+    .gov-footer-payment-label {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.6rem !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        color: rgba(255,255,255,0.5) !important;
+    }
+    
+    /* Bottom Strip */
+    .gov-footer-strip {
+        border-top: 1px solid rgba(201, 168, 76, 0.1);
+        padding-top: 0.75rem;
+        margin-top: 0.5rem;
+    }
+    
+    .gov-footer-strip span {
+        font-family: 'Merriweather', serif !important;
+        font-size: 0.5rem !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
+        color: rgba(255,255,255,0.3) !important;
+    }
+    
+    /* Border gold for hr */
+    .border-gold {
+        border-color: #c9a84c !important;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .footer {
+            padding-top: 2rem !important;
+            padding-bottom: 1rem !important;
+        }
+        
+        .gov-seal-text {
+            font-size: 0.5rem !important;
+            letter-spacing: 1.5px !important;
+        }
+        
+        .gov-seal-icon {
+            font-size: 0.8rem !important;
+            margin: 0 0.3rem !important;
+        }
+        
+        .gov-footer-title {
+            font-size: 1rem !important;
+        }
+        
+        .gov-footer-sub {
+            font-size: 0.4rem !important;
+        }
+        
+        .gov-footer-heading {
+            font-size: 0.6rem !important;
+        }
+        
+        .gov-footer-link {
+            font-size: 0.6rem !important;
+        }
+        
+        .gov-footer-contact {
+            font-size: 0.65rem !important;
+        }
+        
+        .gov-footer-copyright {
+            font-size: 0.6rem !important;
+            text-align: center !important;
+        }
+        
+        .gov-footer-ppra {
+            font-size: 0.5rem !important;
+            text-align: center !important;
+        }
+        
+        .gov-payment-icon {
+            font-size: 1.2rem !important;
+        }
+        
+        .gov-footer-payment-label {
+            font-size: 0.5rem !important;
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .col-md-6.text-md-end {
+            text-align: center !important;
+            margin-top: 0.5rem !important;
+        }
+        
+        .col-md-6.text-md-start {
+            text-align: center !important;
+        }
+        
+        .gov-social-btn {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 0.7rem !important;
+        }
+        
+        .gov-footer-strip span {
+            font-size: 0.4rem !important;
+            letter-spacing: 1px !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .gov-seal-text {
+            font-size: 0.4rem !important;
+            letter-spacing: 1px !important;
+        }
+        
+        .gov-footer-title {
+            font-size: 0.85rem !important;
+            letter-spacing: 1.5px !important;
+        }
+        
+        .gov-footer-link {
+            font-size: 0.55rem !important;
+        }
+        
+        .gov-payment-icon {
+            font-size: 1rem !important;
+        }
+        
+        .gov-social-btn {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 0.6rem !important;
+        }
+    }
+</style>

@@ -1,0 +1,686 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Reviews - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+    
+    .manage-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+    }
+    
+    .manage-header {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%);
+        border-radius: 16px;
+        border: 2px solid #c9a84c;
+        padding: 1.5rem 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .manage-header h4 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+    
+    .manage-header p {
+        color: rgba(255,255,255,0.8);
+        font-family: 'Source Sans Pro', sans-serif;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+    
+    .manage-header .stats-summary {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        background: rgba(255,255,255,0.1);
+        padding: 0.5rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .manage-header .stats-summary .stat-item {
+        text-align: center;
+    }
+    
+    .manage-header .stats-summary .stat-item .number {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #c9a84c;
+    }
+    
+    .manage-header .stats-summary .stat-item .label {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.7);
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .review-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .review-card:hover {
+        border-color: #c9a84c;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    
+    .review-card .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .review-card .review-header .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .review-card .review-header .reviewer-info .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #c9a84c;
+    }
+    
+    .review-card .review-header .reviewer-info .name {
+        font-weight: 700;
+        color: #0a4a2a;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .review-card .review-header .reviewer-info .email {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .review-card .review-header .review-meta {
+        text-align: right;
+    }
+    
+    .review-card .review-header .review-meta .product-link {
+        font-weight: 600;
+        color: #0a4a2a;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .review-card .review-header .review-meta .product-link:hover {
+        color: #c9a84c;
+    }
+    
+    .review-card .review-header .review-meta .date {
+        font-size: 0.8rem;
+        color: #6c757d;
+        font-family: 'Source Sans Pro', sans-serif;
+        display: block;
+    }
+    
+    .review-card .review-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .review-card .review-rating .stars {
+        color: #c9a84c;
+        font-size: 1.1rem;
+    }
+    
+    .review-card .review-rating .rating-text {
+        font-weight: 600;
+        color: #0a4a2a;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.9rem;
+    }
+    
+    .review-card .review-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: #0a4a2a;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .review-card .review-content {
+        font-family: 'Source Sans Pro', sans-serif;
+        color: #495057;
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+    }
+    
+    .review-card .review-pros-cons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .review-card .review-pros-cons .pros {
+        background: #d4edda;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+    
+    .review-card .review-pros-cons .pros .label {
+        color: #155724;
+        font-weight: 700;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.8rem;
+    }
+    
+    .review-card .review-pros-cons .pros .text {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.9rem;
+        color: #155724;
+    }
+    
+    .review-card .review-pros-cons .cons {
+        background: #f8d7da;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+    
+    .review-card .review-pros-cons .cons .label {
+        color: #721c24;
+        font-weight: 700;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.8rem;
+    }
+    
+    .review-card .review-pros-cons .cons .text {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.9rem;
+        color: #721c24;
+    }
+    
+    .review-card .review-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding-top: 0.75rem;
+        border-top: 2px solid #e9ecef;
+    }
+    
+    .review-card .review-footer .status-badge {
+        padding: 0.25rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .review-card .review-footer .status-badge.approved { background: #d4edda; color: #155724; }
+    .review-card .review-footer .status-badge.pending { background: #fff3cd; color: #856404; }
+    .review-card .review-footer .status-badge.rejected { background: #f8d7da; color: #721c24; }
+    
+    .review-card .review-footer .helpful-count {
+        font-family: 'Source Sans Pro', sans-serif;
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+    
+    .review-card .review-footer .helpful-count i {
+        color: #c9a84c;
+    }
+    
+    .review-card .review-footer .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-outline-success {
+        border: 2px solid #28a745;
+        color: #28a745;
+        background: transparent;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .btn-outline-success:hover {
+        background: #28a745;
+        color: white;
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        background: transparent;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #0a4a2a;
+        color: #0a4a2a;
+        background: transparent;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #0a4a2a;
+        color: white;
+    }
+    
+    .search-filter {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+    
+    .search-filter input, .search-filter select {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Source Sans Pro', sans-serif;
+        flex: 1;
+        min-width: 150px;
+        font-size: 0.9rem;
+    }
+    
+    .search-filter input:focus, .search-filter select:focus {
+        border-color: #c9a84c;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+    }
+    
+    .search-filter .btn-search {
+        background: #0a4a2a;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-family: 'Source Sans Pro', sans-serif;
+        transition: all 0.3s ease;
+    }
+    
+    .search-filter .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(10, 74, 42, 0.3);
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 0.4rem 0.8rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        color: #0a4a2a;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .pagination a:hover {
+        border-color: #c9a84c;
+        background: #f5edd6;
+    }
+    
+    .pagination .current {
+        background: #0a4a2a;
+        color: white;
+        border-color: #0a4a2a;
+    }
+    
+    @media (max-width: 768px) {
+        .manage-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .manage-header .stats-summary {
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .search-filter {
+            flex-direction: column;
+        }
+        
+        .review-card .review-pros-cons {
+            grid-template-columns: 1fr;
+        }
+        
+        .review-card .review-footer {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+        }
+        
+        .review-card .review-footer .action-buttons {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="manage-container">
+        <!-- Header -->
+        <div class="manage-header">
+            <div>
+                <h4><i class="fas fa-star me-2"></i>Manage Reviews</h4>
+                <p>Review, approve, and manage customer feedback</p>
+            </div>
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div class="number">{{ total_reviews|default:0 }}</div>
+                    <div class="label">Total Reviews</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">{{ approved_reviews|default:0 }}</div>
+                    <div class="label">Approved</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">{{ pending_reviews|default:0 }}</div>
+                    <div class="label">Pending</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">{{ average_rating|default:"0.0" }}</div>
+                    <div class="label">Avg Rating</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search & Filter -->
+        <div class="search-filter">
+            <input type="text" id="searchInput" placeholder="Search by product, reviewer, or comment..." value="{{ request.GET.q }}">
+            <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <select id="ratingFilter">
+                <option value="">All Ratings</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+            </select>
+            <select id="verifiedFilter">
+                <option value="">All</option>
+                <option value="verified">Verified Only</option>
+                <option value="unverified">Unverified</option>
+            </select>
+            <button class="btn-search" onclick="applyFilters()">
+                <i class="fas fa-search me-1"></i>Filter
+            </button>
+            <a href="{% url 'dashboard:admin_reviews' %}" class="btn-outline-primary" style="padding: 0.5rem 1rem;">
+                <i class="fas fa-undo me-1"></i>Reset
+            </a>
+        </div>
+        
+        <!-- Reviews List -->
+        {% for review in reviews %}
+        <div class="review-card">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    {% if review.user.profile_picture %}
+                        <img src="{{ review.user.profile_picture.url }}" alt="{{ review.user.full_name }}" class="avatar">
+                    {% else %}
+                        <img src="{% static 'images/default-avatar.png' %}" alt="{{ review.user.full_name }}" class="avatar">
+                    {% endif %}
+                    <div>
+                        <div class="name">{{ review.user.full_name }}</div>
+                        <div class="email">{{ review.user.email }}</div>
+                        {% if review.is_verified %}
+                            <span class="badge bg-success" style="font-size: 0.65rem;">
+                                <i class="fas fa-check-circle me-1"></i>Verified Buyer
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="review-meta">
+                    <a href="{% url 'products:product_detail' review.product.slug %}" class="product-link" target="_blank">
+                        {{ review.product.name|truncatechars:30 }}
+                    </a>
+                    <span class="date">{{ review.created_at|date:"M d, Y" }}</span>
+                </div>
+            </div>
+            
+            <div class="review-rating">
+                <div class="stars">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= review.rating %}
+                            <i class="fas fa-star"></i>
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="rating-text">{{ review.rating }} / 5</span>
+            </div>
+            
+            {% if review.title %}
+            <div class="review-title">{{ review.title }}</div>
+            {% endif %}
+            
+            <div class="review-content">{{ review.comment }}</div>
+            
+            {% if review.pros or review.cons %}
+            <div class="review-pros-cons">
+                {% if review.pros %}
+                <div class="pros">
+                    <div class="label"><i class="fas fa-thumbs-up me-1"></i>Pros</div>
+                    <div class="text">{{ review.pros }}</div>
+                </div>
+                {% endif %}
+                {% if review.cons %}
+                <div class="cons">
+                    <div class="label"><i class="fas fa-thumbs-down me-1"></i>Cons</div>
+                    <div class="text">{{ review.cons }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="review-footer">
+                <div>
+                    <span class="status-badge {{ review.status }}">
+                        {{ review.get_status_display }}
+                    </span>
+                    <span class="helpful-count ms-2">
+                        <i class="fas fa-heart me-1"></i>{{ review.helpful_count }} found helpful
+                    </span>
+                </div>
+                <div class="action-buttons">
+                    {% if review.status == 'pending' %}
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="approve" 
+                                    formaction="{% url 'dashboard:admin_reviews_approve' review.id %}"
+                                    class="btn-outline-success">
+                                <i class="fas fa-check me-1"></i>Approve
+                            </button>
+                            <button type="submit" name="action" value="reject"
+                                    formaction="{% url 'dashboard:admin_reviews_reject' review.id %}"
+                                    class="btn-outline-danger">
+                                <i class="fas fa-times me-1"></i>Reject
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if review.status == 'approved' %}
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="reject"
+                                    formaction="{% url 'dashboard:admin_reviews_reject' review.id %}"
+                                    class="btn-outline-danger">
+                                <i class="fas fa-times me-1"></i>Unapprove
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if review.status == 'rejected' %}
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="approve"
+                                    formaction="{% url 'dashboard:admin_reviews_approve' review.id %}"
+                                    class="btn-outline-success">
+                                <i class="fas fa-check me-1"></i>Approve
+                            </button>
+                        </form>
+                    {% endif %}
+                    <button onclick="deleteReview({{ review.id }})" class="btn-outline-danger">
+                        <i class="fas fa-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <i class="fas fa-star fa-3x text-muted mb-3 d-block"></i>
+            <h5 style="font-family: 'Playfair Display', serif; color: #0a4a2a;">No Reviews Found</h5>
+            <p class="text-muted" style="font-family: 'Source Sans Pro', sans-serif;">
+                There are no reviews to display. Check back later.
+            </p>
+        </div>
+        {% endfor %}
+        
+        <!-- Pagination -->
+        {% if reviews.has_other_pages %}
+        <div class="pagination">
+            {% if reviews.has_previous %}
+                <a href="?page=1">&laquo;</a>
+                <a href="?page={{ reviews.previous_page_number }}">‹</a>
+            {% endif %}
+            
+            {% for num in reviews.paginator.page_range %}
+                {% if reviews.number == num %}
+                    <span class="current">{{ num }}</span>
+                {% elif num > reviews.number|add:'-3' and num < reviews.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if reviews.has_next %}
+                <a href="?page={{ reviews.next_page_number }}">›</a>
+                <a href="?page={{ reviews.paginator.num_pages }}">&raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; border-radius: 16px; border: 3px solid #c9a84c; padding: 2rem; max-width: 500px; width: 90%;">
+        <h5 style="font-family: 'Playfair Display', serif; color: #0a4a2a; font-weight: 700;"><i class="fas fa-exclamation-triangle me-2" style="color: #dc3545;"></i>Confirm Delete</h5>
+        <p style="font-family: 'Source Sans Pro', sans-serif;" id="deleteMessage">
+            Are you sure you want to delete this review? This action cannot be undone.
+        </p>
+        <div class="modal-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;">
+            <button onclick="closeDeleteModal()" class="btn-outline-primary" style="padding: 0.5rem 1.5rem;">
+                <i class="fas fa-times me-2"></i>Cancel
+            </button>
+            <form id="deleteForm" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-outline-danger" style="padding: 0.5rem 1.5rem;">
+                    <i class="fas fa-trash me-2"></i>Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Delete review
+    function deleteReview(reviewId) {
+        document.getElementById('deleteMessage').textContent = 
+            'Are you sure you want to delete this review? This action cannot be undone.';
+        document.getElementById('deleteForm').action = `/dashboard/admin/reviews/delete/${reviewId}/`;
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+    
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+    
+    // Apply filters
+    function applyFilters() {
+        const search = document.getElementById('searchInput').value;
+        const status = document.getElementById('statusFilter').value;
+        const rating = document.getElementById('ratingFilter').value;
+        const verified = document.getElementById('verifiedFilter').value;
+        
+        let url = '{% url "dashboard:admin_reviews" %}?';
+        if (search) url += `q=${search}&`;
+        if (status) url += `status=${status}&`;
+        if (rating) url += `rating=${rating}&`;
+        if (verified) url += `verified=${verified}`;
+        
+        window.location.href = url;
+    }
+    
+    // Enter key for search
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFilters();
+        }
+    });
+    
+    // Close modal on overlay click
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+</script>
+{% endblock %}

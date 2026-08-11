@@ -1,0 +1,21 @@
+<!-- apps/products/templates/products/product_list.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <h1>Products</h1>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>{{ product.name }}</h5>
+                    <p>KES {{ product.price }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No products found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

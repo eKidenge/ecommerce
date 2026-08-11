@@ -1,0 +1,289 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%); border-bottom: 3px solid #c9a84c;">
+    <div class="container">
+        <button class="navbar-toggler border-gold" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" 
+                style="border-color: #c9a84c;">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-gold {% if request.path == '/' %}active{% endif %}" 
+                       href="{% url 'products:home' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                        <i class="fas fa-home me-1"></i>HOME
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-gold {% if 'products' in request.path and 'product_list' in request.path %}active{% endif %}" 
+                       href="{% url 'products:product_list' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                        <i class="fas fa-th-list me-1"></i>PRODUCTS
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-gold {% if 'categories' in request.path %}active{% endif %}" 
+                       href="{% url 'products:category_list' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                        <i class="fas fa-folder me-1"></i>CATEGORIES
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-gold {% if 'featured' in request.path %}active{% endif %}" 
+                       href="{% url 'products:featured' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                        <i class="fas fa-star me-1" style="color: #c9a84c;"></i>FEATURED
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-gold {% if 'new_arrivals' in request.path %}active{% endif %}" 
+                       href="{% url 'products:new_arrivals' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                        <i class="fas fa-clock me-1"></i>NEW ARRIVALS
+                    </a>
+                </li>
+                {% if user.is_authenticated and user.is_vendor %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-gold {% if 'vendor' in request.path %}active{% endif %}" 
+                           href="{% url 'dashboard:vendor_dashboard' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                            <i class="fas fa-store me-1"></i>VENDOR
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user.is_staff or user.user_type == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-gold {% if 'admin' in request.path %}active{% endif %}" 
+                           href="{% url 'dashboard:admin_dashboard' %}" style="font-family: 'Times New Roman', 'Georgia', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;">
+                            <i class="fas fa-cog me-1"></i>ADMIN
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            
+            <!-- Mobile Search -->
+            <form action="{% url 'products:search' %}" method="get" class="d-flex d-md-none mt-2 w-100">
+                <input type="search" name="q" class="form-control me-2" placeholder="Search products..." 
+                       style="border: 2px solid #c9a84c; border-radius: 8px; font-family: 'Times New Roman', 'Georgia', serif; font-weight: 600;">
+                <button type="submit" class="btn" style="background: #c9a84c; color: #0a4a2a; border-radius: 8px; font-weight: 700; border: 2px solid #c9a84c; font-family: 'Times New Roman', 'Georgia', serif;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Government-style fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Merriweather:wght@700;900&display=swap');
+    
+    /* Navbar specific styles */
+    .navbar {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%);
+        border-bottom: 3px solid #c9a84c;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        padding: 0.5rem 0;
+    }
+    
+    .navbar .nav-link {
+        color: rgba(255, 255, 255, 0.85) !important;
+        transition: all 0.3s ease;
+        padding: 0.5rem 1.2rem;
+        border-radius: 8px;
+        margin: 0 0.1rem;
+        position: relative;
+        font-family: 'Playfair Display', 'Times New Roman', 'Georgia', serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 0.85rem;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .navbar .nav-link:hover {
+        color: #c9a84c !important;
+        background: rgba(201, 168, 76, 0.12);
+        transform: translateY(-2px);
+        text-shadow: 0 2px 4px rgba(201, 168, 76, 0.3);
+    }
+    
+    .navbar .nav-link.active {
+        color: #c9a84c !important;
+        background: rgba(201, 168, 76, 0.18);
+        border-bottom: 3px solid #c9a84c;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .navbar .nav-link.active::after {
+        content: '▸';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #c9a84c;
+        font-size: 12px;
+        animation: none;
+    }
+    
+    @keyframes activeLink {
+        from {
+            width: 0;
+            opacity: 0;
+        }
+        to {
+            width: 60%;
+            opacity: 1;
+        }
+    }
+    
+    .navbar .nav-link i {
+        transition: all 0.3s ease;
+        width: 1.2rem;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .navbar .nav-link:hover i {
+        transform: scale(1.1);
+        color: #c9a84c;
+    }
+    
+    .navbar .nav-link-gold {
+        color: rgba(255, 255, 255, 0.85) !important;
+    }
+    
+    .navbar .nav-link-gold:hover {
+        color: #c9a84c !important;
+    }
+    
+    .navbar .nav-link-gold.active {
+        color: #c9a84c !important;
+    }
+    
+    /* Navbar Toggler */
+    .navbar .navbar-toggler {
+        border-color: #c9a84c !important;
+        padding: 0.5rem 0.75rem;
+        transition: all 0.3s ease;
+    }
+    
+    .navbar .navbar-toggler:hover {
+        background: rgba(201, 168, 76, 0.1);
+    }
+    
+    .navbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(201, 168, 76, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    }
+    
+    /* Mobile Search */
+    .navbar .d-md-none .form-control {
+        border: 2px solid #c9a84c;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        font-family: 'Playfair Display', 'Times New Roman', serif;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .navbar .d-md-none .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.3);
+        border-color: #c9a84c;
+    }
+    
+    .navbar .d-md-none .btn {
+        background: #c9a84c;
+        color: #0a4a2a;
+        font-weight: 700;
+        border: 2px solid #c9a84c;
+        transition: all 0.3s ease;
+        font-family: 'Playfair Display', 'Times New Roman', serif;
+    }
+    
+    .navbar .d-md-none .btn:hover {
+        background: #a88a3a;
+        border-color: #a88a3a;
+        transform: scale(1.02);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .navbar .nav-link {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+        }
+        
+        .navbar .nav-link:hover {
+            transform: translateX(5px);
+        }
+        
+        .navbar .nav-link.active::after {
+            display: none;
+        }
+        
+        .navbar .nav-link.active {
+            background: rgba(201, 168, 76, 0.15);
+            border-left: 4px solid #c9a84c;
+            border-radius: 0;
+            border-bottom: none;
+        }
+        
+        .navbar .navbar-nav {
+            padding: 0.5rem 0;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .navbar .nav-link {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+            letter-spacing: 1.5px;
+        }
+        
+        .navbar .nav-link i {
+            width: 1.5rem;
+        }
+    }
+    
+    /* Desktop search form in header is hidden on mobile */
+    @media (max-width: 767.98px) {
+        .navbar .d-none.d-md-block {
+            display: none !important;
+        }
+    }
+    
+    /* Gold shimmer for bottom border - Government style */
+    @keyframes goldShimmerNav {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+    
+    .navbar::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #c9a84c 15%, 
+            #f5edd6 35%, 
+            #c9a84c 50%, 
+            #f5edd6 70%, 
+            #c9a84c 85%, 
+            transparent 100%
+        );
+        background-size: 200% 100%;
+        animation: goldShimmerNav 6s ease-in-out infinite;
+    }
+    
+    /* Government-style seal decoration */
+    .navbar::before {
+        content: '⚜';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(201, 168, 76, 0.05);
+        font-size: 80px;
+        pointer-events: none;
+        font-family: 'Times New Roman', serif;
+    }
+</style>

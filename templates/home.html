@@ -1,0 +1,1706 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}National E-Procurement Portal - Republic of Kenya{% endblock %}
+
+{% block meta_description %}Official National E-Procurement Platform. Secure, transparent, and efficient public procurement system for government supplies and services.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Official Government Fonts - Serif for Authority */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Merriweather:wght@300;400;700;900&display=swap');
+    
+    /* Government Typography Standards */
+    * {
+        font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6, .gov-heading {
+        font-family: 'Playfair Display', 'Times New Roman', serif;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+    }
+    
+    .gov-text {
+        font-family: 'Merriweather', 'Georgia', serif;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+        line-height: 1.8;
+    }
+    
+    .gov-label {
+        font-family: 'Merriweather', 'Georgia', serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 0.75rem;
+    }
+    
+    /* Official Government Colors */
+    :root {
+        --gov-green: #0a4a2a;
+        --gov-green-dark: #052a18;
+        --gov-green-light: #1a6a3a;
+        --gov-gold: #c9a84c;
+        --gov-gold-dark: #a88a3a;
+        --gov-gold-light: #f5edd6;
+        --gov-cream: #faf8f0;
+        --gov-navy: #1a2a4a;
+        --gov-red: #8b1a1a;
+        --gov-border: #8a7a5a;
+    }
+    
+    /* Official Seal Badge */
+    .official-seal {
+        display: inline-block;
+        background: var(--gov-gold);
+        color: var(--gov-green-dark);
+        padding: 0.25rem 1.5rem;
+        border-radius: 0;
+        font-family: 'Playfair Display', serif;
+        font-weight: 900;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        border: 2px solid var(--gov-gold-dark);
+        position: relative;
+    }
+    
+    .official-seal::before {
+        content: '⚜ ';
+        font-size: 0.9rem;
+    }
+    
+    .official-seal::after {
+        content: ' ⚜';
+        font-size: 0.9rem;
+    }
+    
+    /* Government Banner Strip */
+    .gov-strip {
+        background: var(--gov-green-dark);
+        color: var(--gov-gold-light);
+        padding: 0.3rem 0;
+        border-bottom: 2px solid var(--gov-gold);
+        font-size: 0.7rem;
+        text-align: center;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+    }
+    
+    .gov-strip span {
+        margin: 0 1.5rem;
+    }
+    
+    .gov-strip .separator {
+        color: var(--gov-gold);
+    }
+    
+    /* Hero Section with Official Government Style */
+    .hero-section {
+        position: relative;
+        border-radius: 0;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        border: 3px solid var(--gov-gold);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        background: var(--gov-green-dark);
+    }
+    
+    .hero-section .carousel-item {
+        min-height: 550px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    
+    .hero-section .carousel-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(5, 42, 24, 0.92) 0%, rgba(10, 74, 42, 0.88) 100%);
+        z-index: 1;
+    }
+    
+    .hero-section .carousel-item .hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 80px 60px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 550px;
+        border-left: 6px solid var(--gov-gold);
+        background: rgba(5, 42, 24, 0.6);
+        backdrop-filter: blur(2px);
+    }
+    
+    .hero-section .carousel-item .hero-content .product-image {
+        position: absolute;
+        right: 60px;
+        bottom: 60px;
+        width: 320px;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 4px solid var(--gov-gold);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        opacity: 0.85;
+        z-index: 3;
+        transition: all 0.5s ease;
+    }
+    
+    .hero-section .carousel-item .hero-content .product-image:hover {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    
+    .hero-section h1 {
+        font-size: 3.2rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+        font-family: 'Playfair Display', serif;
+        color: white;
+        letter-spacing: 1px;
+        line-height: 1.2;
+    }
+    
+    .hero-section h1 span {
+        color: var(--gov-gold);
+        border-bottom: 3px solid var(--gov-gold);
+        padding-bottom: 0.1rem;
+    }
+    
+    .hero-section .hero-reference {
+        font-size: 0.8rem;
+        color: var(--gov-gold-light);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-family: 'Merriweather', serif;
+        border-left: 3px solid var(--gov-gold);
+        padding-left: 1rem;
+    }
+    
+    .hero-section .hero-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 1.5rem;
+        font-weight: 300;
+        max-width: 600px;
+        font-family: 'Merriweather', serif;
+        line-height: 1.8;
+    }
+    
+    .hero-section .hero-price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gov-gold);
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+    }
+    
+    .hero-section .hero-price .original {
+        font-size: 1.2rem;
+        color: rgba(255,255,255,0.5);
+        text-decoration: line-through;
+        margin-left: 1rem;
+        font-weight: 400;
+    }
+    
+    .hero-section .hero-badge {
+        display: inline-block;
+        background: var(--gov-gold);
+        color: var(--gov-green-dark);
+        padding: 0.4rem 1.5rem;
+        border-radius: 0;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+        display: inline-block;
+        width: fit-content;
+        border: 2px solid var(--gov-gold-dark);
+        font-family: 'Merriweather', serif;
+    }
+    
+    .hero-section .hero-badge .badge-icon {
+        margin-right: 0.5rem;
+    }
+    
+    .hero-section .carousel-control-prev,
+    .hero-section .carousel-control-next {
+        width: 50px;
+        height: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(201, 168, 76, 0.2);
+        border-radius: 0;
+        border: 2px solid var(--gov-gold);
+        opacity: 0.6;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+    
+    .hero-section .carousel-control-prev {
+        left: 10px;
+    }
+    
+    .hero-section .carousel-control-next {
+        right: 10px;
+    }
+    
+    .hero-section .carousel-control-prev:hover,
+    .hero-section .carousel-control-next:hover {
+        background: var(--gov-gold);
+        opacity: 1;
+    }
+    
+    .hero-section .carousel-indicators {
+        bottom: 20px;
+        z-index: 10;
+    }
+    
+    .hero-section .carousel-indicators button {
+        width: 14px;
+        height: 14px;
+        border-radius: 0;
+        border: 2px solid var(--gov-gold);
+        margin: 0 6px;
+        background: transparent;
+        transition: all 0.3s ease;
+        transform: rotate(45deg);
+    }
+    
+    .hero-section .carousel-indicators button.active {
+        background: var(--gov-gold);
+        transform: rotate(45deg) scale(1.2);
+    }
+    
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        border-top: 2px solid rgba(201, 168, 76, 0.3);
+        padding-top: 1.5rem;
+    }
+    
+    .hero-stats .stat {
+        text-align: center;
+        padding: 0.5rem 1.5rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(201, 168, 76, 0.2);
+    }
+    
+    .hero-stats .stat h3 {
+        font-size: 1.8rem;
+        font-weight: 900;
+        margin-bottom: 0;
+        color: var(--gov-gold);
+        font-family: 'Playfair Display', serif;
+    }
+    
+    .hero-stats .stat p {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        margin-bottom: 0;
+        font-weight: 700;
+        color: rgba(255,255,255,0.8);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Merriweather', serif;
+    }
+    
+    /* Official Buttons */
+    .btn-gov-primary {
+        background: var(--gov-green);
+        border: 2px solid var(--gov-gold);
+        color: white;
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 0.75rem 2rem;
+        border-radius: 0;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+    }
+    
+    .btn-gov-primary:hover {
+        background: var(--gov-gold);
+        color: var(--gov-green-dark);
+        border-color: var(--gov-gold);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
+    }
+    
+    .btn-gov-secondary {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 0.75rem 2rem;
+        border-radius: 0;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+    }
+    
+    .btn-gov-secondary:hover {
+        background: white;
+        color: var(--gov-green-dark);
+        transform: translateY(-2px);
+    }
+    
+    /* Official Section Headers */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        border-bottom: 4px solid var(--gov-gold);
+        padding-bottom: 0.75rem;
+    }
+    
+    .section-header .gov-section-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--gov-gold);
+        opacity: 0.3;
+        margin-right: 0.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.8rem;
+        font-weight: 900;
+        margin-bottom: 0;
+        font-family: 'Playfair Display', serif;
+        color: var(--gov-green);
+        letter-spacing: 0.5px;
+    }
+    
+    .section-header .view-all {
+        color: var(--gov-green);
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.2s;
+        padding: 0.5rem 1.5rem;
+        border: 2px solid var(--gov-green);
+        border-radius: 0;
+        font-family: 'Merriweather', serif;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .section-header .view-all:hover {
+        background: var(--gov-green);
+        color: white;
+    }
+    
+    /* Category Cards - Official Style */
+    .category-card {
+        transition: all 0.3s ease;
+        border: 2px solid var(--gov-border);
+        border-radius: 0;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(10, 74, 42, 0.15);
+        border-color: var(--gov-gold);
+    }
+    
+    .category-card img {
+        height: 100px;
+        object-fit: cover;
+        width: 100%;
+        border-bottom: 2px solid var(--gov-gold);
+    }
+    
+    .category-card .category-icon {
+        font-size: 2.5rem;
+        padding: 1rem;
+        color: var(--gov-green);
+    }
+    
+    .category-card .card-body {
+        padding: 0.75rem 1rem;
+        text-align: center;
+    }
+    
+    .category-card .card-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 0.1rem;
+        font-family: 'Merriweather', serif;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .category-card .card-text {
+        font-size: 0.7rem;
+        color: #6c757d;
+        font-family: 'Merriweather', serif;
+    }
+    
+    /* Product Cards - Official Style */
+    .product-card {
+        transition: all 0.3s ease;
+        border: 2px solid var(--gov-border);
+        border-radius: 0;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        height: 100%;
+        position: relative;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(10, 74, 42, 0.15);
+        border-color: var(--gov-gold);
+    }
+    
+    .product-card .product-image {
+        position: relative;
+        overflow: hidden;
+        padding-top: 100%;
+        background: #f8f5f0;
+        border-bottom: 3px solid var(--gov-gold);
+    }
+    
+    .product-card .product-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .product-card:hover .product-image img {
+        transform: scale(1.03);
+    }
+    
+    .product-card .product-badges {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        z-index: 2;
+    }
+    
+    .product-card .product-badges .badge {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 0;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-family: 'Merriweather', serif;
+    }
+    
+    .product-card .product-id {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        background: rgba(5, 42, 24, 0.8);
+        color: var(--gov-gold-light);
+        padding: 0.15rem 0.5rem;
+        font-size: 0.6rem;
+        font-family: 'Merriweather', serif;
+        letter-spacing: 0.5px;
+        border: 1px solid var(--gov-gold);
+    }
+    
+    .product-card .wishlist-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 0;
+        background: white;
+        border: 2px solid var(--gov-green);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 2;
+        color: #6c757d;
+        cursor: pointer;
+    }
+    
+    .product-card .wishlist-btn:hover {
+        background: var(--gov-gold-light);
+    }
+    
+    .product-card .wishlist-btn.active {
+        color: var(--gov-red);
+        border-color: var(--gov-red);
+    }
+    
+    .product-card .card-body {
+        padding: 1rem 1.25rem;
+    }
+    
+    .product-card .card-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+        min-height: 2.4rem;
+        font-family: 'Merriweather', serif;
+        letter-spacing: 0.3px;
+    }
+    
+    .product-card .card-title a {
+        color: #212529;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .product-card .card-title a:hover {
+        color: var(--gov-green);
+    }
+    
+    .product-card .product-code {
+        font-size: 0.6rem;
+        color: var(--gov-border);
+        font-family: 'Merriweather', serif;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+    }
+    
+    .product-card .rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .product-card .rating .stars {
+        color: var(--gov-gold);
+        font-size: 0.75rem;
+    }
+    
+    .product-card .rating .review-count {
+        font-size: 0.7rem;
+        color: #6c757d;
+        font-family: 'Merriweather', serif;
+    }
+    
+    .product-card .price {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.6rem;
+        flex-wrap: wrap;
+        border-top: 1px solid #e9ecef;
+        padding-top: 0.5rem;
+    }
+    
+    .product-card .price .current {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--gov-green);
+        font-family: 'Playfair Display', serif;
+    }
+    
+    .product-card .price .original {
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-decoration: line-through;
+        font-family: 'Merriweather', serif;
+    }
+    
+    .product-card .price .discount {
+        font-size: 0.7rem;
+        color: var(--gov-red);
+        font-weight: 700;
+        background: #f5e6e6;
+        padding: 0.1rem 0.5rem;
+        border-radius: 0;
+        font-family: 'Merriweather', serif;
+        border: 1px solid var(--gov-red);
+    }
+    
+    .product-card .add-to-cart-btn {
+        width: 100%;
+        border-radius: 0;
+        padding: 0.5rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        background: var(--gov-green);
+        border: 2px solid var(--gov-gold);
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+        font-family: 'Merriweather', serif;
+    }
+    
+    .product-card .add-to-cart-btn:hover {
+        background: var(--gov-gold);
+        color: var(--gov-green-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(201, 168, 76, 0.3);
+    }
+    
+    .product-card .add-to-cart-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+        background: #6c757d;
+        border-color: #6c757d;
+    }
+    
+    /* Quick Links - Official Grid */
+    .quick-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border: 2px solid var(--gov-border);
+        padding: 1rem;
+        background: var(--gov-cream);
+    }
+    
+    .quick-link-item {
+        background: white;
+        padding: 1rem 1.25rem;
+        border-radius: 0;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        text-decoration: none;
+        color: #212529;
+        border: 2px solid transparent;
+        border-left: 4px solid var(--gov-gold);
+    }
+    
+    .quick-link-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(10, 74, 42, 0.1);
+        color: var(--gov-green);
+        border-color: var(--gov-gold);
+        border-left-color: var(--gov-green);
+    }
+    
+    .quick-link-item i {
+        font-size: 1.5rem;
+        margin-bottom: 0.3rem;
+        color: var(--gov-green);
+        display: block;
+    }
+    
+    .quick-link-item h6 {
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+    }
+    
+    .quick-link-item small {
+        font-size: 0.6rem;
+        font-family: 'Merriweather', serif;
+        letter-spacing: 0.3px;
+    }
+    
+    /* Official Notice Banner */
+    .official-notice {
+        background: var(--gov-green-dark);
+        padding: 1.25rem;
+        border-radius: 0;
+        color: white;
+        margin-bottom: 2rem;
+        border-left: 6px solid var(--gov-gold);
+        font-family: 'Merriweather', serif;
+    }
+    
+    .official-notice .notice-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 900;
+        color: var(--gov-gold);
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+    }
+    
+    .official-notice .notice-text {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+    
+    .official-notice .notice-text i {
+        color: var(--gov-gold);
+        margin-right: 0.5rem;
+    }
+    
+    /* Newsletter - Official Style */
+    .newsletter-section {
+        background: var(--gov-cream);
+        padding: 3rem;
+        border-radius: 0;
+        margin-bottom: 2rem;
+        border: 3px solid var(--gov-gold);
+        border-top: 6px solid var(--gov-gold);
+    }
+    
+    .newsletter-section h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--gov-green);
+        font-weight: 900;
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .newsletter-section .form-control {
+        border-radius: 0;
+        border: 2px solid var(--gov-border);
+        font-family: 'Merriweather', serif;
+        padding: 0.75rem 1rem;
+    }
+    
+    .newsletter-section .form-control:focus {
+        border-color: var(--gov-gold);
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+    }
+    
+    .newsletter-section .btn-primary {
+        background: var(--gov-green);
+        border: 2px solid var(--gov-gold);
+        border-radius: 0;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+    }
+    
+    .newsletter-section .btn-primary:hover {
+        background: var(--gov-gold);
+        color: var(--gov-green-dark);
+        border-color: var(--gov-gold);
+    }
+    
+    /* CTA Banner - Official */
+    .cta-banner {
+        background: linear-gradient(135deg, var(--gov-green-dark) 0%, var(--gov-green) 100%);
+        border: 4px solid var(--gov-gold);
+        border-radius: 0;
+        border-left: 8px solid var(--gov-gold);
+    }
+    
+    .cta-banner .btn-light {
+        background: white;
+        color: var(--gov-green);
+        font-weight: 700;
+        border-radius: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Merriweather', serif;
+        border: 2px solid white;
+    }
+    
+    .cta-banner .btn-light:hover {
+        background: var(--gov-gold);
+        color: var(--gov-green-dark);
+        border-color: var(--gov-gold);
+    }
+    
+    .cta-banner .btn-outline-light {
+        border: 2px solid white;
+        color: white;
+        font-weight: 700;
+        border-radius: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Merriweather', serif;
+    }
+    
+    .cta-banner .btn-outline-light:hover {
+        background: white;
+        color: var(--gov-green);
+    }
+    
+    /* Gold accent line */
+    .gold-accent {
+        width: 60px;
+        height: 4px;
+        background: var(--gov-gold);
+        margin: 0 auto 1.5rem auto;
+        border-radius: 0;
+    }
+    
+    /* Animations */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-slide-up {
+        animation: slideUp 0.5s ease forwards;
+        opacity: 0;
+    }
+    
+    .animate-slide-up:nth-child(2) { animation-delay: 0.05s; }
+    .animate-slide-up:nth-child(3) { animation-delay: 0.1s; }
+    .animate-slide-up:nth-child(4) { animation-delay: 0.15s; }
+    .animate-slide-up:nth-child(5) { animation-delay: 0.2s; }
+    .animate-slide-up:nth-child(6) { animation-delay: 0.25s; }
+    .animate-slide-up:nth-child(7) { animation-delay: 0.3s; }
+    .animate-slide-up:nth-child(8) { animation-delay: 0.35s; }
+    .animate-slide-up:nth-child(9) { animation-delay: 0.4s; }
+    .animate-slide-up:nth-child(10) { animation-delay: 0.45s; }
+    .animate-slide-up:nth-child(11) { animation-delay: 0.5s; }
+    .animate-slide-up:nth-child(12) { animation-delay: 0.55s; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section .carousel-item {
+            min-height: 400px;
+        }
+        
+        .hero-section .carousel-item .hero-content {
+            padding: 40px 30px;
+            min-height: 400px;
+            border-left-width: 4px;
+        }
+        
+        .hero-section .carousel-item .hero-content .product-image {
+            width: 120px;
+            height: 120px;
+            right: 15px;
+            bottom: 15px;
+        }
+        
+        .hero-section h1 {
+            font-size: 1.8rem;
+        }
+        
+        .hero-section .hero-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .hero-section .hero-price {
+            font-size: 1.3rem;
+        }
+        
+        .hero-stats {
+            gap: 0.5rem;
+        }
+        
+        .hero-stats .stat {
+            padding: 0.3rem 0.8rem;
+        }
+        
+        .hero-stats .stat h3 {
+            font-size: 1.2rem;
+        }
+        
+        .hero-stats .stat p {
+            font-size: 0.6rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.3rem;
+        }
+        
+        .section-header .view-all {
+            font-size: 0.65rem;
+            padding: 0.3rem 1rem;
+        }
+        
+        .category-card img {
+            height: 70px;
+        }
+        
+        .product-card .card-title {
+            font-size: 0.75rem;
+            min-height: 2.1rem;
+        }
+        
+        .product-card .price .current {
+            font-size: 0.95rem;
+        }
+        
+        .quick-links {
+            grid-template-columns: repeat(2, 1fr);
+            padding: 0.75rem;
+        }
+        
+        .newsletter-section {
+            padding: 1.5rem 1rem;
+        }
+        
+        .newsletter-section h3 {
+            font-size: 1.3rem;
+        }
+        
+        .cta-banner .p-5 {
+            padding: 2rem !important;
+        }
+        
+        .gov-strip span {
+            margin: 0 0.5rem;
+            font-size: 0.6rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-section .carousel-item .hero-content .product-image {
+            width: 80px;
+            height: 80px;
+            right: 10px;
+            bottom: 10px;
+        }
+        
+        .hero-section .carousel-item {
+            min-height: 350px;
+        }
+        
+        .hero-section .carousel-item .hero-content {
+            padding: 25px 15px;
+            min-height: 350px;
+        }
+        
+        .hero-section h1 {
+            font-size: 1.4rem;
+        }
+        
+        .hero-stats .stat h3 {
+            font-size: 0.9rem;
+        }
+        
+        .btn-gov-primary,
+        .btn-gov-secondary {
+            font-size: 0.7rem;
+            padding: 0.5rem 1rem;
+            letter-spacing: 1px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Official Government Strip -->
+<div class="gov-strip">
+    <span>⚜ Republic of Kenya</span>
+    <span class="separator">|</span>
+    <span>National E-Procurement Portal</span>
+    <span class="separator">|</span>
+    <span>Official Government Platform</span>
+    <span class="separator">|</span>
+    <span>PPRA Compliant</span>
+</div>
+
+<div class="container">
+    <!-- Hero Section with Carousel -->
+    <section class="hero-section">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                {% if featured_products|length > 3 %}
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                {% endif %}
+            </div>
+            
+            <div class="carousel-inner">
+                {% for product in featured_products|slice:":5" %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="hero-content">
+                        <div class="hero-reference">
+                            <span class="badge-icon">📜</span> Official Procurement Listing
+                        </div>
+                        <div class="hero-badge">
+                            <span class="badge-icon">
+                                {% if product.is_featured %}⭐{% endif %}
+                                {% if product.is_best_seller %}🏆{% endif %}
+                                {% if forloop.first %}🔥{% endif %}
+                            </span>
+                            {% if product.is_featured %}Featured Item{% endif %}
+                            {% if product.is_best_seller %}Best Seller{% endif %}
+                            {% if forloop.first %}Priority Listing{% endif %}
+                        </div>
+                        <h1>{{ product.name|truncatechars:40 }}</h1>
+                        <p class="hero-subtitle">{{ product.short_description|default:product.description|truncatechars:120 }}</p>
+                        <div class="hero-price">
+                            KES {{ product.price }}
+                            {% if product.compare_price %}
+                            <span class="original">KES {{ product.compare_price }}</span>
+                            {% endif %}
+                            {% if product.get_discount_percentage %}
+                            <span class="badge bg-danger ms-2" style="font-size: 1rem; border-radius: 0; font-family: 'Merriweather', serif;">-{{ product.get_discount_percentage }}%</span>
+                            {% endif %}
+                        </div>
+                        <div class="btn-group">
+                            <a href="{% url 'products:product_detail' product.slug %}" class="btn-gov-primary">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </a>
+                            <button class="btn-gov-secondary" onclick="addToCart({{ product.id }})">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                        
+                        <!-- Product Image -->
+                        {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="product-image">
+                        {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="{{ product.name }}" class="product-image">
+                        {% endif %}
+                        
+                        <!-- Stats -->
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <h3>{{ product.total_reviews }}</h3>
+                                <p>Reviews</p>
+                            </div>
+                            <div class="stat">
+                                <h3>{{ product.average_rating|floatformat:1 }}★</h3>
+                                <p>Rating</p>
+                            </div>
+                            <div class="stat">
+                                <h3>{{ product.total_sales }}</h3>
+                                <p>Units Sold</p>
+                            </div>
+                            <div class="stat">
+                                <h3>{% if product.in_stock %}✓ In Stock{% else %}✗ Out of Stock{% endif %}</h3>
+                                <p>Availability</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Fallback if no featured products -->
+                <div class="carousel-item active">
+                    <div class="hero-content text-center">
+                        <div class="hero-reference">⚜ Republic of Kenya</div>
+                        <h1>National <span>E-Procurement</span> Portal</h1>
+                        <div class="gold-accent" style="margin: 1rem auto;"></div>
+                        <p class="hero-subtitle" style="margin: 0 auto; max-width: 700px;">Official government procurement platform for transparent, efficient, and secure public procurement of goods and services.</p>
+                        <div class="btn-group" style="justify-content: center;">
+                            <a href="{% url 'products:product_list' %}" class="btn-gov-primary">
+                                <i class="fas fa-shopping-bag me-2"></i>Browse Tenders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+    
+    <!-- Official Notice -->
+    <div class="official-notice">
+        <div class="notice-title">
+            <i class="fas fa-gavel me-2"></i> Official Notice to All Procuring Entities
+        </div>
+        <div class="notice-text">
+            <i class="fas fa-check-circle"></i> All products listed on this portal are vetted and approved by the Public Procurement Regulatory Authority (PPRA).
+            <i class="fas fa-shield-alt ms-3"></i> Transactions are secure, transparent, and compliant with government procurement regulations.
+            <i class="fas fa-clock ms-3"></i> Tender submissions close on the specified deadlines.
+        </div>
+    </div>
+    
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <a href="{% url 'products:product_list' %}" class="quick-link-item">
+            <i class="fas fa-th-list"></i>
+            <h6>Browse Tenders</h6>
+            <small>View all listings</small>
+        </a>
+        <a href="{% url 'products:featured' %}" class="quick-link-item">
+            <i class="fas fa-star"></i>
+            <h6>Featured Tenders</h6>
+            <small>Priority listings</small>
+        </a>
+        <a href="{% url 'products:new_arrivals' %}" class="quick-link-item">
+            <i class="fas fa-clock"></i>
+            <h6>New Listings</h6>
+            <small>Recent additions</small>
+        </a>
+        <a href="{% url 'products:category_list' %}" class="quick-link-item">
+            <i class="fas fa-folder"></i>
+            <h6>Categories</h6>
+            <small>By classification</small>
+        </a>
+        <a href="{% url 'cart:view' %}" class="quick-link-item">
+            <i class="fas fa-shopping-cart"></i>
+            <h6>Procurement Cart</h6>
+            <small>{{ cart_total_items|default:0 }} items</small>
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'dashboard:customer_dashboard' %}" class="quick-link-item">
+            <i class="fas fa-user"></i>
+            <h6>My Dashboard</h6>
+            <small>View your orders</small>
+        </a>
+        {% endif %}
+    </div>
+    
+    <!-- Categories Section -->
+    {% if categories %}
+    <section class="mb-5">
+        <div class="section-header">
+            <h2>
+                <span class="gov-section-number">01</span>
+                <i class="fas fa-th-large me-2 text-primary-green"></i>Procurement Categories
+            </h2>
+            <a href="{% url 'products:category_list' %}" class="view-all">
+                View All <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-3">
+            {% for category in categories %}
+            <div class="col-md-2 col-4 animate-slide-up">
+                <a href="{% url 'products:product_list' %}?category={{ category.slug }}" 
+                   class="text-decoration-none">
+                    <div class="category-card">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" loading="lazy">
+                        {% else %}
+                            <div class="category-icon">
+                                <i class="{{ category.icon|default:'fas fa-folder-open' }}"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title">{{ category.name }}</h6>
+                            <p class="card-text">
+                                {{ category.products.count }} listings
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Featured Products -->
+    {% if featured_products %}
+    <section class="mb-5" id="featured-products">
+        <div class="section-header">
+            <h2>
+                <span class="gov-section-number">02</span>
+                <i class="fas fa-star me-2 text-gold"></i>Featured Tenders
+            </h2>
+            <a href="{% url 'products:featured' %}" class="view-all">
+                View All <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-md-3 col-6 animate-slide-up">
+                <div class="product-card" data-product-id="{{ product.id }}">
+                    <div class="product-image">
+                        {% if product.images.first %}
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" loading="lazy">
+                        {% else %}
+                            <img src="{% static 'images/no-image.png' %}" alt="No image" loading="lazy">
+                        {% endif %}
+                        
+                        <div class="product-badges">
+                            {% if product.is_featured %}
+                                <span class="badge bg-warning text-dark">Featured</span>
+                            {% endif %}
+                            {% if product.get_discount_percentage %}
+                                <span class="badge bg-danger">-{{ product.get_discount_percentage }}%</span>
+                            {% endif %}
+                            {% if not product.in_stock %}
+                                <span class="badge bg-secondary">Out of Stock</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-id">REF: {{ product.id|stringformat:"06d" }}</div>
+                        
+                        {% if user.is_authenticated %}
+                        <button class="wishlist-btn" 
+                                data-product-id="{{ product.id }}"
+                                onclick="toggleWishlist(this, {{ product.id }})">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="product-code">TENDER NO: GOV/{{ product.id|stringformat:"06d" }}/2026</div>
+                        <h6 class="card-title">
+                            <a href="{% url 'products:product_detail' product.slug %}">
+                                {{ product.name|truncatechars:50 }}
+                            </a>
+                        </h6>
+                        
+                        <div class="rating">
+                            <div class="stars">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= product.average_rating|floatformat:0|add:"0" %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="review-count">({{ product.total_reviews }} evaluations)</span>
+                        </div>
+                        
+                        <div class="price">
+                            <span class="current">KES {{ product.price }}</span>
+                            {% if product.compare_price %}
+                                <span class="original">KES {{ product.compare_price }}</span>
+                                {% if product.get_discount_percentage %}
+                                    <span class="discount">-{{ product.get_discount_percentage }}%</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        
+                        <button class="add-to-cart-btn" 
+                                onclick="addToCart({{ product.id }})"
+                                {% if not product.in_stock %}disabled{% endif %}>
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            {% if product.in_stock %}Procure Now{% else %}Unavailable{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Best Sellers -->
+    {% if best_sellers %}
+    <section class="mb-5">
+        <div class="section-header">
+            <h2>
+                <span class="gov-section-number">03</span>
+                <i class="fas fa-trophy me-2 text-gold"></i>Top Sellers
+            </h2>
+            <a href="{% url 'products:product_list' %}?sort=popularity" class="view-all">
+                View All <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for product in best_sellers %}
+            <div class="col-md-3 col-6 animate-slide-up">
+                <div class="product-card" data-product-id="{{ product.id }}">
+                    <div class="product-image">
+                        {% if product.images.first %}
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" loading="lazy">
+                        {% else %}
+                            <img src="{% static 'images/no-image.png' %}" alt="No image" loading="lazy">
+                        {% endif %}
+                        
+                        <div class="product-badges">
+                            {% if product.is_best_seller %}
+                                <span class="badge bg-success">Top Seller</span>
+                            {% endif %}
+                            {% if product.get_discount_percentage %}
+                                <span class="badge bg-danger">-{{ product.get_discount_percentage }}%</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-id">REF: {{ product.id|stringformat:"06d" }}</div>
+                        
+                        {% if user.is_authenticated %}
+                        <button class="wishlist-btn" 
+                                data-product-id="{{ product.id }}"
+                                onclick="toggleWishlist(this, {{ product.id }})">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="product-code">TENDER NO: GOV/{{ product.id|stringformat:"06d" }}/2026</div>
+                        <h6 class="card-title">
+                            <a href="{% url 'products:product_detail' product.slug %}">
+                                {{ product.name|truncatechars:50 }}
+                            </a>
+                        </h6>
+                        
+                        <div class="rating">
+                            <div class="stars">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= product.average_rating|floatformat:0|add:"0" %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="review-count">({{ product.total_reviews }} evaluations)</span>
+                        </div>
+                        
+                        <div class="price">
+                            <span class="current">KES {{ product.price }}</span>
+                            {% if product.compare_price %}
+                                <span class="original">KES {{ product.compare_price }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <button class="add-to-cart-btn" 
+                                onclick="addToCart({{ product.id }})"
+                                {% if not product.in_stock %}disabled{% endif %}>
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            {% if product.in_stock %}Procure Now{% else %}Unavailable{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- New Arrivals -->
+    {% if new_arrivals %}
+    <section class="mb-5">
+        <div class="section-header">
+            <h2>
+                <span class="gov-section-number">04</span>
+                <i class="fas fa-clock me-2 text-primary-green"></i>New Listings
+            </h2>
+            <a href="{% url 'products:new_arrivals' %}" class="view-all">
+                View All <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for product in new_arrivals %}
+            <div class="col-md-3 col-6 animate-slide-up">
+                <div class="product-card" data-product-id="{{ product.id }}">
+                    <div class="product-image">
+                        {% if product.images.first %}
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" loading="lazy">
+                        {% else %}
+                            <img src="{% static 'images/no-image.png' %}" alt="No image" loading="lazy">
+                        {% endif %}
+                        
+                        <div class="product-badges">
+                            <span class="badge bg-info">New Listing</span>
+                            {% if product.get_discount_percentage %}
+                                <span class="badge bg-danger">-{{ product.get_discount_percentage }}%</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-id">REF: {{ product.id|stringformat:"06d" }}</div>
+                        
+                        {% if user.is_authenticated %}
+                        <button class="wishlist-btn" 
+                                data-product-id="{{ product.id }}"
+                                onclick="toggleWishlist(this, {{ product.id }})">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="product-code">TENDER NO: GOV/{{ product.id|stringformat:"06d" }}/2026</div>
+                        <h6 class="card-title">
+                            <a href="{% url 'products:product_detail' product.slug %}">
+                                {{ product.name|truncatechars:50 }}
+                            </a>
+                        </h6>
+                        
+                        <div class="rating">
+                            <div class="stars">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= product.average_rating|floatformat:0|add:"0" %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="review-count">({{ product.total_reviews }} evaluations)</span>
+                        </div>
+                        
+                        <div class="price">
+                            <span class="current">KES {{ product.price }}</span>
+                            {% if product.compare_price %}
+                                <span class="original">KES {{ product.compare_price }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <button class="add-to-cart-btn" 
+                                onclick="addToCart({{ product.id }})"
+                                {% if not product.in_stock %}disabled{% endif %}>
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            {% if product.in_stock %}Procure Now{% else %}Unavailable{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Newsletter -->
+    <section class="newsletter-section text-center">
+        <div class="official-seal mb-3">Official Government Communication</div>
+        <h3><i class="fas fa-envelope me-2 text-gold"></i>Subscribe to Tender Notifications</h3>
+        <p class="text-muted gov-text">Receive official notifications on new tenders, procurement opportunities, and government procurement policy updates.</p>
+        <form class="row justify-content-center g-3" action="{% url 'products:newsletter_subscribe' %}" method="POST">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <input type="email" name="email" class="form-control form-control-lg" 
+                       placeholder="Enter your official email address" required>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    Subscribe <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </form>
+    </section>
+    
+    <!-- Call to Action Banner -->
+    <section class="mb-5">
+        <div class="row g-0 cta-banner text-white overflow-hidden">
+            <div class="col-md-8 p-5">
+                <div class="official-seal mb-3">⚜ Republic of Kenya</div>
+                <h2 class="display-5 fw-bold" style="font-family: 'Playfair Display', serif;">Ready to Procure?</h2>
+                <p class="lead mb-4 gov-text" style="color: rgba(255,255,255,0.9);">Join the National E-Procurement Portal. Transparent, secure, and efficient government procurement.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'products:product_list' %}" class="btn-light btn-gov-primary" style="background: white; color: var(--gov-green-dark); border-color: white;">
+                        <i class="fas fa-shopping-bag me-2"></i>Browse Tenders
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'accounts:register' %}" class="btn-gov-secondary">
+                        <i class="fas fa-user-plus me-2"></i>Register as Supplier
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4 d-none d-md-flex align-items-center justify-content-center p-4" style="background: rgba(0,0,0,0.1);">
+                <i class="fas fa-gavel fa-6x opacity-25"></i>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle wishlist (only for authenticated users)
+    function toggleWishlist(button, productId) {
+        {% if user.is_authenticated %}
+        const icon = button.querySelector('i');
+        const isActive = button.classList.contains('active');
+        
+        if (isActive) {
+            fetch(`/wishlist/remove/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: `product_id=${productId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    button.classList.remove('active');
+                    icon.className = 'far fa-heart';
+                    showNotification('Removed from watchlist', 'info');
+                }
+            })
+            .catch(error => {
+                showNotification('Failed to update watchlist', 'error');
+            });
+        } else {
+            fetch(`/wishlist/add/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: `product_id=${productId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    button.classList.add('active');
+                    icon.className = 'fas fa-heart';
+                    showNotification('Added to watchlist!', 'success');
+                }
+            })
+            .catch(error => {
+                showNotification('Failed to update watchlist', 'error');
+            });
+        }
+        {% else %}
+        showNotification('Please login to add to watchlist', 'warning');
+        window.location.href = '{% url "accounts:login" %}?next=' + window.location.pathname;
+        {% endif %}
+    }
+    
+    // Add to cart
+    function addToCart(productId) {
+        const button = event.currentTarget;
+        const originalHtml = button.innerHTML;
+        
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        
+        fetch(`/cart/add/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: `product_id=${productId}&quantity=1`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.querySelector('.cart-badge');
+                if (badge) {
+                    badge.textContent = data.total_items;
+                }
+                showNotification('Added to procurement cart successfully!', 'success');
+            } else if (data.error === 'Please login to add items to cart') {
+                showNotification('Please login to add to cart', 'warning');
+                window.location.href = '{% url "accounts:login" %}?next=' + window.location.pathname;
+            } else {
+                showNotification(data.error || 'Failed to add to cart', 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Failed to add to cart', 'error');
+        })
+        .finally(() => {
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+        });
+    }
+    
+    // Get CSRF token
+    function getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+               document.cookie.split('; ')
+               .find(row => row.startsWith('csrftoken='))
+               ?.split('=')[1] || '';
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const container = document.getElementById('notification-container') || createNotificationContainer();
+        const notification = document.createElement('div');
+        notification.className = `toast align-items-center text-white bg-${type} border-0 show`;
+        notification.role = 'alert';
+        
+        const icon = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        }[type] || 'fa-info-circle';
+        
+        notification.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body" style="font-family: 'Merriweather', serif; letter-spacing: 0.3px;">
+                    <i class="fas ${icon} me-2"></i>${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                        data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        
+        container.appendChild(notification);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
+    }
+    
+    function createNotificationContainer() {
+        const container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+        return container;
+    }
+    
+    // Intersection Observer for lazy loading animations
+    document.addEventListener('DOMContentLoaded', function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.animate-slide-up').forEach(el => {
+            el.classList.remove('animate-slide-up');
+            observer.observe(el);
+        });
+    });
+    
+    // Auto play carousel with pause on hover
+    document.addEventListener('DOMContentLoaded', function() {
+        const carousel = document.getElementById('heroCarousel');
+        if (carousel) {
+            const bsCarousel = new bootstrap.Carousel(carousel, {
+                interval: 6000,
+                pause: 'hover',
+                wrap: true
+            });
+        }
+    });
+</script>
+{% endblock %}

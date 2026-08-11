@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard - E-Store{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+    
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+    
+    .dashboard-header {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%);
+        border-radius: 16px;
+        border: 2px solid #c9a84c;
+        padding: 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .dashboard-header .user-greeting h2 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    
+    .dashboard-header .user-greeting p {
+        color: rgba(255,255,255,0.8);
+        font-family: 'Source Sans Pro', sans-serif;
+        margin-bottom: 0;
+    }
+    
+    .dashboard-header .user-badge {
+        display: inline-block;
+        background: #c9a84c;
+        color: #0a4a2a;
+        padding: 0.3rem 1.2rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .dashboard-header .header-date {
+        color: rgba(255,255,255,0.7);
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.9rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        border-color: #c9a84c;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card .stat-icon {
+        font-size: 2.5rem;
+        color: #c9a84c;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .stat-card .stat-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #0a4a2a;
+        margin-bottom: 0;
+    }
+    
+    .stat-card .stat-label {
+        font-family: 'Source Sans Pro', sans-serif;
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .dashboard-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+        border-color: #c9a84c;
+    }
+    
+    .dashboard-card .card-title {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .dashboard-card .card-title a {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.85rem;
+        color: #c9a84c;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .dashboard-card .card-title a:hover {
+        color: #0a4a2a;
+    }
+    
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f3f5;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .order-item:last-child {
+        border-bottom: none;
+    }
+    
+    .order-item .order-number {
+        font-weight: 600;
+        color: #0a4a2a;
+    }
+    
+    .order-item .order-status {
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .order-status.pending { background: #fff3cd; color: #856404; }
+    .order-status.processing { background: #cce5ff; color: #004085; }
+    .order-status.shipped { background: #d4edda; color: #155724; }
+    .order-status.delivered { background: #d1ecf1; color: #0c5460; }
+    .order-status.cancelled { background: #f8d7da; color: #721c24; }
+    
+    .wishlist-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    
+    .wishlist-item:last-child {
+        border-bottom: none;
+    }
+    
+    .wishlist-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+    }
+    
+    .wishlist-item .product-name {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+        color: #0a4a2a;
+        flex: 1;
+    }
+    
+    .wishlist-item .product-price {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 700;
+        color: #0a4a2a;
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+    
+    .quick-action-btn {
+        padding: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        text-align: center;
+        text-decoration: none;
+        color: #0a4a2a;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .quick-action-btn:hover {
+        border-color: #c9a84c;
+        background: #f5edd6;
+        transform: translateY(-2px);
+        color: #0a4a2a;
+    }
+    
+    .quick-action-btn i {
+        display: block;
+        font-size: 1.5rem;
+        color: #c9a84c;
+        margin-bottom: 0.25rem;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .dashboard-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="user-greeting">
+                <h2><i class="fas fa-user-circle me-2"></i>Welcome back, {{ user.full_name }}!</h2>
+                <p>Here's what's happening with your account today</p>
+            </div>
+            <div>
+                <span class="user-badge">
+                    <i class="fas fa-user-tag me-1"></i>{{ user.get_user_type_display }}
+                </span>
+                <p class="header-date mt-2">
+                    <i class="fas fa-calendar-alt me-1"></i>{% now "l, F j, Y" %}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-shopping-bag"></i></span>
+                <h3 class="stat-number">{{ total_orders|default:0 }}</h3>
+                <p class="stat-label">Total Orders</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-heart"></i></span>
+                <h3 class="stat-number">{{ wishlist_count|default:0 }}</h3>
+                <p class="stat-label">Wishlist Items</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-star"></i></span>
+                <h3 class="stat-number">{{ review_count|default:0 }}</h3>
+                <p class="stat-label">Reviews Written</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-credit-card"></i></span>
+                <h3 class="stat-number">KES {{ total_spent|default:"0"|floatformat:0 }}</h3>
+                <p class="stat-label">Total Spent</p>
+            </div>
+        </div>
+        
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Recent Orders -->
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <span><i class="fas fa-clock me-2" style="color: #c9a84c;"></i>Recent Orders</span>
+                    <a href="{% url 'dashboard:customer_orders' %}">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                {% if recent_orders %}
+                    {% for order in recent_orders %}
+                    <div class="order-item">
+                        <div>
+                            <div class="order-number">#{{ order.order_number }}</div>
+                            <small class="text-muted">{{ order.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
+                            <div><strong>KES {{ order.total_amount }}</strong></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-3" style="font-family: 'Source Sans Pro', sans-serif;">
+                        <i class="fas fa-shopping-bag me-2"></i>No orders yet. Start shopping!
+                    </p>
+                {% endif %}
+            </div>
+            
+            <!-- Quick Actions -->
+            <div>
+                <div class="dashboard-card mb-3">
+                    <div class="card-title">
+                        <span><i class="fas fa-bolt me-2" style="color: #c9a84c;"></i>Quick Actions</span>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="{% url 'products:product_list' %}" class="quick-action-btn">
+                            <i class="fas fa-shopping-bag"></i>
+                            Shop Now
+                        </a>
+                        <a href="{% url 'cart:view' %}" class="quick-action-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            View Cart
+                        </a>
+                        <a href="{% url 'wishlist:view' %}" class="quick-action-btn">
+                            <i class="fas fa-heart"></i>
+                            Wishlist
+                        </a>
+                        <a href="{% url 'accounts:profile' %}" class="quick-action-btn">
+                            <i class="fas fa-user-edit"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Wishlist Preview -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <span><i class="fas fa-heart me-2" style="color: #c9a84c;"></i>Wishlist</span>
+                        <a href="{% url 'dashboard:customer_wishlist' %}">View All <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    {% if wishlist_items %}
+                        {% for item in wishlist_items|slice:":3" %}
+                        <div class="wishlist-item">
+                            {% if item.product.images.first %}
+                                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/no-image.png' %}" alt="{{ item.product.name }}">
+                            {% endif %}
+                            <span class="product-name">{{ item.product.name|truncatechars:30 }}</span>
+                            <span class="product-price">KES {{ item.product.price }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3" style="font-family: 'Source Sans Pro', sans-serif;">
+                            <i class="fas fa-heart me-2"></i>Your wishlist is empty.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,892 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - E-Store{% endblock %}
+
+{% block meta_description %}Create your E-Store account and start shopping today. Choose between Customer or Vendor registration.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+    
+    .register-container {
+        max-width: 780px;
+        margin: 2rem auto;
+    }
+    
+    .register-card {
+        background: white;
+        border-radius: 20px;
+        border: 3px solid #c9a84c;
+        box-shadow: 0 20px 60px rgba(10, 74, 42, 0.2);
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #0a4a2a, #c9a84c, #0a4a2a);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { background-position: -200% center; }
+        50% { background-position: 200% center; }
+    }
+    
+    .register-card .card-header {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%);
+        border-bottom: 3px solid #c9a84c;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-card .card-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: rgba(201, 168, 76, 0.05);
+        border-radius: 50%;
+    }
+    
+    .register-card .card-header .header-icon {
+        font-size: 3rem;
+        color: #c9a84c;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .register-card .card-header h4 {
+        font-family: 'Playfair Display', serif;
+        color: white;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .register-card .card-header p {
+        color: rgba(255,255,255,0.8);
+        font-family: 'Source Sans Pro', sans-serif;
+        margin-bottom: 0;
+        position: relative;
+        z-index: 1;
+        font-size: 1rem;
+    }
+    
+    .register-card .card-header .gold-accent {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #c9a84c, #f5edd6, #c9a84c);
+        margin: 0.75rem auto;
+        border-radius: 2px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .register-card .card-body {
+        padding: 2.5rem 3rem;
+    }
+    
+    /* Role Dropdown Styling */
+    .role-dropdown-wrapper {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
+        border-radius: 12px;
+        border: 2px solid #c9a84c;
+        position: relative;
+    }
+    
+    .role-dropdown-wrapper .role-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        color: #0a4a2a;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 1.05rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .role-dropdown-wrapper .role-label i {
+        color: #c9a84c;
+        font-size: 1.3rem;
+    }
+    
+    .role-select-wrapper {
+        position: relative;
+    }
+    
+    .role-select-wrapper select {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        font-size: 1rem;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+        border: 2px solid #c9a84c;
+        border-radius: 12px;
+        background: white;
+        color: #0a4a2a;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230a4a2a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+        padding-right: 3.5rem;
+    }
+    
+    .role-select-wrapper select:focus {
+        outline: none;
+        border-color: #0a4a2a;
+        box-shadow: 0 0 0 4px rgba(10, 74, 42, 0.15);
+    }
+    
+    .role-select-wrapper select option {
+        padding: 0.5rem;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .role-select-wrapper .role-description {
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-family: 'Source Sans Pro', sans-serif;
+        padding: 0.5rem 1rem;
+        background: white;
+        border-radius: 8px;
+        border-left: 3px solid #c9a84c;
+        display: none;
+    }
+    
+    .role-select-wrapper .role-description.active {
+        display: block;
+        animation: fadeSlide 0.3s ease forwards;
+    }
+    
+    @keyframes fadeSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .role-select-wrapper .role-description i {
+        color: #c9a84c;
+        margin-right: 0.5rem;
+    }
+    
+    /* Vendor Fields */
+    .vendor-fields-container {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border: 2px dashed #c9a84c;
+        display: none;
+        animation: fadeSlide 0.4s ease forwards;
+    }
+    
+    .vendor-fields-container.show {
+        display: block;
+    }
+    
+    .vendor-fields-container .vendor-section-title {
+        font-family: 'Playfair Display', serif;
+        color: #0a4a2a;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #c9a84c;
+    }
+    
+    .vendor-fields-container .vendor-section-title i {
+        color: #c9a84c;
+        margin-right: 0.5rem;
+    }
+    
+    /* Form Controls */
+    .register-card .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-family: 'Source Sans Pro', sans-serif;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+    
+    .register-card .form-control:focus {
+        border-color: #c9a84c;
+        box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.15);
+    }
+    
+    .register-card .form-control.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+    }
+    
+    .register-card .form-control.is-valid {
+        border-color: #28a745;
+        box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+    }
+    
+    .register-card .form-label {
+        font-weight: 600;
+        color: #0a4a2a;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    .register-card .form-label .required-star {
+        color: #dc3545;
+        margin-left: 2px;
+    }
+    
+    .register-card .form-text {
+        color: #6c757d;
+        font-size: 0.8rem;
+        font-family: 'Source Sans Pro', sans-serif;
+        margin-top: 0.25rem;
+    }
+    
+    .register-card .input-icon-wrapper {
+        position: relative;
+    }
+    
+    .register-card .input-icon-wrapper .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #c9a84c;
+        font-size: 1rem;
+    }
+    
+    .register-card .input-icon-wrapper .form-control {
+        padding-left: 2.8rem;
+    }
+    
+    /* Password Strength */
+    .password-strength-container {
+        margin-top: 0.5rem;
+    }
+    
+    .password-strength-container .strength-bar {
+        height: 6px;
+        border-radius: 3px;
+        background: #e9ecef;
+        overflow: hidden;
+        margin-bottom: 0.25rem;
+    }
+    
+    .password-strength-container .strength-bar .progress {
+        height: 100%;
+        width: 0%;
+        transition: width 0.4s ease, background 0.4s ease;
+        border-radius: 3px;
+    }
+    
+    .password-strength-container .strength-text {
+        font-size: 0.8rem;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+    }
+    
+    .password-requirements {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .password-requirements .req-item {
+        font-size: 0.75rem;
+        color: #6c757d;
+        font-family: 'Source Sans Pro', sans-serif;
+        padding: 0.15rem 0.6rem;
+        background: #f8f9fa;
+        border-radius: 20px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .password-requirements .req-item.valid {
+        color: #28a745;
+        border-color: #28a745;
+        background: #d4edda;
+    }
+    
+    .password-requirements .req-item i {
+        margin-right: 0.25rem;
+    }
+    
+    /* Register Button */
+    .register-card .btn-register {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 100%);
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.15rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-family: 'Source Sans Pro', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-card .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .register-card .btn-register:hover::before {
+        left: 100%;
+    }
+    
+    .register-card .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(10, 74, 42, 0.4);
+    }
+    
+    .register-card .btn-register:active {
+        transform: translateY(0);
+    }
+    
+    .register-card .btn-register:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    /* Terms */
+    .register-card .terms-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .register-card .terms-check input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        margin-top: 0.1rem;
+        border: 2px solid #c9a84c;
+        border-radius: 4px;
+        cursor: pointer;
+        accent-color: #0a4a2a;
+        transition: all 0.3s ease;
+    }
+    
+    .register-card .terms-check input[type="checkbox"]:checked {
+        background: #0a4a2a;
+    }
+    
+    .register-card .terms-check label {
+        font-size: 0.9rem;
+        color: #495057;
+        font-family: 'Source Sans Pro', sans-serif;
+        line-height: 1.5;
+    }
+    
+    .register-card .terms-check a {
+        color: #0a4a2a;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .register-card .terms-check a:hover {
+        color: #c9a84c;
+        text-decoration: underline;
+    }
+    
+    .register-card .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid #e9ecef;
+    }
+    
+    .register-card .login-link p {
+        font-family: 'Source Sans Pro', sans-serif;
+        color: #6c757d;
+    }
+    
+    .register-card .login-link a {
+        color: #0a4a2a;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .register-card .login-link a:hover {
+        color: #c9a84c;
+        text-decoration: underline;
+    }
+    
+    /* Alert Messages */
+    .alert-custom {
+        border-radius: 10px;
+        border-left: 4px solid;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .alert-custom.alert-success {
+        border-left-color: #28a745;
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .alert-custom.alert-error {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .register-card .card-body {
+            padding: 1.5rem;
+        }
+        
+        .register-card .card-header {
+            padding: 1.5rem;
+        }
+        
+        .register-card .card-header .header-icon {
+            font-size: 2.5rem;
+        }
+        
+        .role-dropdown-wrapper {
+            padding: 1rem;
+        }
+        
+        .vendor-fields-container {
+            padding: 1rem;
+        }
+        
+        .password-requirements .req-item {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.5rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .register-container {
+            margin: 1rem auto;
+        }
+        
+        .register-card .card-body {
+            padding: 1rem;
+        }
+        
+        .register-card .role-select-wrapper select {
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="register-container">
+        <div class="register-card">
+            <div class="card-header">
+                <span class="header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </span>
+                <h4>Create Your Account</h4>
+                <div class="gold-accent"></div>
+                <p>Join E-Store and start your shopping journey today</p>
+            </div>
+            
+            <div class="card-body">
+                <!-- Display form errors -->
+                {% if form.errors %}
+                <div class="alert-custom alert-error">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Please correct the errors below.
+                </div>
+                {% endif %}
+                
+                <form method="post" novalidate id="registerForm">
+                    {% csrf_token %}
+                    
+                    <!-- Role Selection Dropdown -->
+                    <div class="role-dropdown-wrapper">
+                        <div class="role-label">
+                            <i class="fas fa-user-tag"></i>
+                            <span>Select Account Type</span>
+                            <span class="text-danger">*</span>
+                        </div>
+                        
+                        <div class="role-select-wrapper">
+                            <select name="user_type" id="userTypeSelect" class="form-select" required>
+                                <option value="customer" selected>
+                                    👤 Customer - Shop and buy products
+                                </option>
+                                <option value="vendor">
+                                    🏪 Vendor - Sell products and manage store
+                                </option>
+                            </select>
+                            
+                            <div class="role-description active" id="customerDesc">
+                                <i class="fas fa-shopping-bag"></i>
+                                <strong>Customer:</strong> Browse products, add to cart, checkout, write reviews, and manage your orders.
+                            </div>
+                            <div class="role-description" id="vendorDesc">
+                                <i class="fas fa-store"></i>
+                                <strong>Vendor:</strong> Create your online store, list products, manage inventory, track sales, and grow your business.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Personal Information Section -->
+                    <h6 style="font-family: 'Playfair Display', serif; color: #0a4a2a; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 2px solid #c9a84c; padding-bottom: 0.5rem;">
+                        <i class="fas fa-user-circle me-2" style="color: #c9a84c;"></i>Personal Information
+                    </h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-1 text-gold"></i>First Name <span class="required-star">*</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                                    {{ form.first_name }}
+                                </div>
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-1 text-gold"></i>Last Name <span class="required-star">*</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                                    {{ form.last_name }}
+                                </div>
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <i class="fas fa-user-tag me-1 text-gold"></i>Username <span class="required-star">*</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <span class="input-icon"><i class="fas fa-user-tag"></i></span>
+                            {{ form.username }}
+                        </div>
+                        <div class="form-text">Choose a unique username for your account.</div>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            <i class="fas fa-envelope me-1 text-gold"></i>Email Address <span class="required-star">*</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                            {{ form.email }}
+                        </div>
+                        <div class="form-text">We'll send you a verification email.</div>
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                            <i class="fas fa-phone me-1 text-gold"></i>Phone Number
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <span class="input-icon"><i class="fas fa-phone"></i></span>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="form-text">Optional but recommended for order updates and delivery.</div>
+                        {% if form.phone_number.errors %}
+                            <div class="invalid-feedback d-block">{{ form.phone_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Password Section -->
+                    <h6 style="font-family: 'Playfair Display', serif; color: #0a4a2a; font-weight: 700; margin: 1.5rem 0 1rem 0; border-bottom: 2px solid #c9a84c; padding-bottom: 0.5rem;">
+                        <i class="fas fa-lock me-2" style="color: #c9a84c;"></i>Password & Security
+                    </h6>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-1 text-gold"></i>Password <span class="required-star">*</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <span class="input-icon"><i class="fas fa-lock"></i></span>
+                            {{ form.password1 }}
+                        </div>
+                        
+                        <div class="password-strength-container">
+                            <div class="strength-bar">
+                                <div class="progress" id="passwordStrengthBar"></div>
+                            </div>
+                            <div class="strength-text" id="passwordStrengthText">Enter a strong password</div>
+                        </div>
+                        
+                        <div class="password-requirements">
+                            <span class="req-item" id="req-length"><i class="fas fa-circle"></i> 8+ chars</span>
+                            <span class="req-item" id="req-uppercase"><i class="fas fa-circle"></i> Uppercase</span>
+                            <span class="req-item" id="req-lowercase"><i class="fas fa-circle"></i> Lowercase</span>
+                            <span class="req-item" id="req-number"><i class="fas fa-circle"></i> Number</span>
+                            <span class="req-item" id="req-special"><i class="fas fa-circle"></i> Special</span>
+                        </div>
+                        
+                        <div class="form-text">Minimum 8 characters with letters, numbers, and symbols.</div>
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback d-block">{{ form.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-1 text-gold"></i>Confirm Password <span class="required-star">*</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <span class="input-icon"><i class="fas fa-lock"></i></span>
+                            {{ form.password2 }}
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">{{ form.password2.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Vendor Fields (hidden by default) -->
+                    <div class="vendor-fields-container" id="vendorFields">
+                        <div class="vendor-section-title">
+                            <i class="fas fa-store"></i> Store Information
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="store_name" class="form-label">
+                                <i class="fas fa-store me-1 text-gold"></i>Store Name <span class="required-star">*</span>
+                            </label>
+                            <div class="input-icon-wrapper">
+                                <span class="input-icon"><i class="fas fa-store"></i></span>
+                                <input type="text" name="store_name" class="form-control" 
+                                       placeholder="Enter your store name" id="store_name">
+                            </div>
+                            <div class="form-text">This will be displayed as your store's public name.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="store_description" class="form-label">
+                                <i class="fas fa-align-left me-1 text-gold"></i>Store Description
+                            </label>
+                            <textarea name="store_description" class="form-control" rows="3" 
+                                      placeholder="Tell customers about your store" id="store_description"></textarea>
+                            <div class="form-text">Describe what you sell and what makes your store unique.</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="business_license" class="form-label">
+                                        <i class="fas fa-id-card me-1 text-gold"></i>Business License <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-icon-wrapper">
+                                        <span class="input-icon"><i class="fas fa-id-card"></i></span>
+                                        <input type="text" name="business_license" class="form-control" 
+                                               placeholder="Enter business license number" id="business_license">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tax_id" class="form-label">
+                                        <i class="fas fa-file-invoice me-1 text-gold"></i>Tax ID / KRA PIN <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-icon-wrapper">
+                                        <span class="input-icon"><i class="fas fa-file-invoice"></i></span>
+                                        <input type="text" name="tax_id" class="form-control" 
+                                               placeholder="Enter your tax ID" id="tax_id">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bank_account" class="form-label">
+                                        <i class="fas fa-university me-1 text-gold"></i>Bank Account Number
+                                    </label>
+                                    <div class="input-icon-wrapper">
+                                        <span class="input-icon"><i class="fas fa-university"></i></span>
+                                        <input type="text" name="bank_account" class="form-control" 
+                                               placeholder="Enter bank account number" id="bank_account">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bank_name" class="form-label">
+                                        <i class="fas fa-building me-1 text-gold"></i>Bank Name
+                                    </label>
+                                    <div class="input-icon-wrapper">
+                                        <span class="input-icon"><i class="fas fa-building"></i></span>
+                                        <input type="text" name="bank_name" class="form-control" 
+                                               placeholder="Enter bank name" id="bank_name">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms -->
+                    <div class="terms-check">
+                        <input type="checkbox" name="terms_agreement" id="terms_agreement" required>
+                        <label for="terms_agreement">
+                            I agree to the 
+                            <a href="#" target="_blank">Terms and Conditions</a> and 
+                            <a href="#" target="_blank">Privacy Policy</a>
+                            <span class="text-danger">*</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="mt-3">
+                        <button type="submit" class="btn-register" id="registerBtn">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </div>
+                    
+                    <!-- Login Link -->
+                    <div class="login-link">
+                        <p><i class="fas fa-arrow-left me-2"></i> Already have an account? 
+                            <a href="{% url 'accounts:login' %}">Login Here</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Role dropdown change handler
+    document.getElementById('userTypeSelect').addEventListener('change', function() {
+        const role = this.value;
+        const customerDesc = document.getElementById('customerDesc');
+        const vendorDesc = document.getElementById('vendorDesc');
+        const vendorFields = document.getElementById('vendorFields');
+        
+        // Show/hide descriptions
+        if (role === 'customer') {
+            customerDesc.classList.add('active');
+            vendorDesc.classList.remove('active');
+            vendorFields.classList.remove('show');
+        } else if (role === 'vendor') {
+            customerDesc.classList.remove('active');
+            vendorDesc.classList.add('active');
+            vendorFields.classList.add('show');
+        }
+    });
+    
+    // Password strength indicator
+    document.querySelector('input[name="password1"]').addEventListener('input', function() {
+        const password = this.value;
+        const bar = document.getElementById('passwordStrengthBar');
+        const text = document.getElementById('passwordStrengthText');
+        
+        // Check requirements
+        const checks = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[^a-zA-Z0-9]/.test(password)
+        };
+        
+        // Update requirement items
+        document.getElementById('req-length').classList.toggle('valid', checks.length);
+        document.getElementById('req-uppercase').classList.toggle('valid', checks.uppercase);
+        document.getElementById('req-lowercase').classList.toggle('valid', checks.lowercase);
+        document.getElementById('req-number').classList.toggle('valid', checks.number);
+        document.getElementById('req-special').classList.toggle('valid', checks.special);
+        
+        // Calculate strength
+        const strength = Object.values(checks).filter(Boolean).length;
+        const percentage = (strength / 5) * 100;
+        bar.style.width = percentage + '%';
+        
+        const colors = ['#dc3545', '#ffc107', '#ffc107', '#28a745', '#28a745', '#28a745'];
+        const labels = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong', 'Very Strong'];
+        bar.style.background = colors[strength];
+        text.textContent = 'Password strength: ' + labels[strength];
+        text.style.color = colors[strength];
+    });
+    
+    // Form validation - prevent submission if terms not checked
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const terms = document.getElementById('terms_agreement');
+        if (!terms.checked) {
+            e.preventDefault();
+            terms.style.outline = '2px solid #dc3545';
+            terms.style.outlineOffset = '2px';
+            alert('Please agree to the Terms and Conditions to continue.');
+            terms.focus();
+        }
+    });
+    
+    // Remove error outline when checkbox is clicked
+    document.getElementById('terms_agreement').addEventListener('change', function() {
+        if (this.checked) {
+            this.style.outline = 'none';
+        }
+    });
+</script>
+{% endblock %}

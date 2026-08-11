@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Orders - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+    
+    .manage-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+    }
+    
+    .manage-header {
+        background: linear-gradient(135deg, #0a4a2a 0%, #062a18 50%, #0a4a2a 100%);
+        border-radius: 16px;
+        border: 2px solid #c9a84c;
+        padding: 1.5rem 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .manage-header h4 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+    
+    .manage-header p {
+        color: rgba(255,255,255,0.8);
+        font-family: 'Source Sans Pro', sans-serif;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+    
+    .order-status-badge {
+        padding: 0.25rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .order-status-badge.pending { background: #fff3cd; color: #856404; }
+    .order-status-badge.processing { background: #cce5ff; color: #004085; }
+    .order-status-badge.shipped { background: #d4edda; color: #155724; }
+    .order-status-badge.delivered { background: #d1ecf1; color: #0c5460; }
+    .order-status-badge.cancelled { background: #f8d7da; color: #721c24; }
+    
+    .payment-status-badge {
+        padding: 0.25rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .payment-status-badge.paid { background: #d4edda; color: #155724; }
+    .payment-status-badge.pending { background: #fff3cd; color: #856404; }
+    .payment-status-badge.failed { background: #f8d7da; color: #721c24; }
+    .payment-status-badge.refunded { background: #d1ecf1; color: #0c5460; }
+    
+    .btn-outline-primary {
+        border: 2px solid #0a4a2a;
+        color: #0a4a2a;
+        background: transparent;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .btn-outline-primary:hover { background: #0a4a2a; color: white; }
+    
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        background: transparent;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .btn-outline-danger:hover { background: #dc3545; color: white; }
+    
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        padding: 1.5rem;
+        overflow-x: auto;
+    }
+    
+    .table-container table {
+        width: 100%;
+        font-family: 'Source Sans Pro', sans-serif;
+        border-collapse: collapse;
+    }
+    
+    .table-container table th {
+        font-weight: 700;
+        color: #0a4a2a;
+        border-bottom: 2px solid #c9a84c;
+        padding: 0.75rem 0.5rem;
+        text-align: left;
+    }
+    
+    .table-container table td {
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+    
+    .table-container table tr:hover td { background: #f8f9fa; }
+    
+    .search-filter {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+    
+    .search-filter input, .search-filter select {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Source Sans Pro', sans-serif;
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .search-filter input:focus, .search-filter select:focus {
+        border-color: #c9a84c;
+        outline: none;
+    }
+    
+    .search-filter .btn-search {
+        background: #0a4a2a;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 0.4rem 0.8rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        color: #0a4a2a;
+        text-decoration: none;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+    }
+    
+    .pagination a:hover { border-color: #c9a84c; background: #f5edd6; }
+    .pagination .current { background: #0a4a2a; color: white; border-color: #0a4a2a; }
+    
+    @media (max-width: 768px) {
+        .manage-header { flex-direction: column; text-align: center; }
+        .search-filter { flex-direction: column; }
+        .table-container { padding: 0.5rem; }
+        .table-container table { font-size: 0.85rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="manage-container">
+        <div class="manage-header">
+            <div>
+                <h4><i class="fas fa-shopping-cart me-2"></i>Manage Orders</h4>
+                <p>View and manage all customer orders</p>
+            </div>
+            <span style="color: rgba(255,255,255,0.8); font-family: 'Source Sans Pro', sans-serif;">
+                <i class="fas fa-box me-1"></i>Total: {{ total_orders|default:0 }}
+            </span>
+        </div>
+        
+        <div class="search-filter">
+            <input type="text" id="searchInput" placeholder="Search by order # or email...">
+            <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <select id="paymentFilter">
+                <option value="">All Payments</option>
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+                <option value="refunded">Refunded</option>
+            </select>
+            <button class="btn-search" onclick="applyFilters()"><i class="fas fa-search me-1"></i>Filter</button>
+            <a href="{% url 'dashboard:admin_orders' %}" class="btn-outline-primary" style="padding: 0.5rem 1rem;">
+                <i class="fas fa-undo me-1"></i>Reset
+            </a>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>#{{ order.order_number }}</strong></td>
+                        <td>
+                            {{ order.user.full_name }}
+                            <br><small class="text-muted">{{ order.user.email }}</small>
+                        </td>
+                        <td><strong>KES {{ order.total_amount }}</strong></td>
+                        <td><span class="order-status-badge {{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td><span class="payment-status-badge {{ order.payment_status }}">{{ order.get_payment_status_display }}</span></td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <a href="{% url 'dashboard:admin_orders_detail' order.id %}" class="btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <a href="{% url 'dashboard:admin_orders_update_status' order.id %}" class="btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Update
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-2x text-muted mb-2 d-block"></i>
+                            <p class="text-muted">No orders found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            {% if orders.has_other_pages %}
+            <div class="pagination">
+                {% if orders.has_previous %}
+                    <a href="?page=1">&laquo;</a>
+                    <a href="?page={{ orders.previous_page_number }}">‹</a>
+                {% endif %}
+                {% for num in orders.paginator.page_range %}
+                    {% if orders.number == num %}
+                        <span class="current">{{ num }}</span>
+                    {% elif num > orders.number|add:'-3' and num < orders.number|add:'3' %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if orders.has_next %}
+                    <a href="?page={{ orders.next_page_number }}">›</a>
+                    <a href="?page={{ orders.paginator.num_pages }}">&raquo;</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function applyFilters() {
+        const search = document.getElementById('searchInput').value;
+        const status = document.getElementById('statusFilter').value;
+        const payment = document.getElementById('paymentFilter').value;
+        let url = '{% url "dashboard:admin_orders" %}?';
+        if (search) url += `q=${search}&`;
+        if (status) url += `status=${status}&`;
+        if (payment) url += `payment=${payment}`;
+        window.location.href = url;
+    }
+</script>
+{% endblock %}
