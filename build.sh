@@ -78,6 +78,13 @@ echo "🗄️  Creating cache table..."
 python manage.py createcachetable
 
 # ============================================
+# CREATE DEFAULT CATEGORIES - RUN THE COMMAND
+# ============================================
+echo ""
+echo "📂 Creating default categories..."
+python manage.py create_categories || echo "   ⚠️ Category creation skipped (command not found)"
+
+# ============================================
 # COLLECT STATIC FILES
 # ============================================
 echo ""
