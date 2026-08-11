@@ -7,6 +7,9 @@ import os
 import dj_database_url
 from decouple import config
 import sys
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +35,8 @@ INSTALLED_APPS = [
     # Third party apps
     'crispy_forms',
     'crispy_bootstrap5',
+    'cloudinary_storage',
+    'cloudinary',
     
     # Custom apps
     'apps.accounts',
@@ -116,23 +121,28 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ============================================
-# MEDIA FILES - FIX FOR RENDER
+# CLOUDINARY CONFIGURATION - FIX FOR RENDER
 # ============================================
-MEDIA_URL = '/media/'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'ftr3rjtu',
+    'API_KEY': '414645543468294',
+    'API_SECRET': 'ziv0suiLab-mtIdQuBL3qnPK_YA',
+}
 
-# Use Render's persistent disk if available
-if 'RENDER' in os.environ:
-    # For Render with disk mounted
-    MEDIA_ROOT = '/opt/render/project/src/media'
-    print(f"📁 Using Render disk for media: {MEDIA_ROOT}", file=sys.stderr)
-else:
-    # Local development
-    MEDIA_ROOT = BASE_DIR / 'media'
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET']
+)
 
-# Ensure media directory exists
-if not os.path.exists(MEDIA_ROOT):
-    os.makedirs(MEDIA_ROOT)
-    print(f"📁 Created media directory: {MEDIA_ROOT}", file=sys.stderr)
+# Use Cloudinary for media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_URL = f"cloudinary://{CLOUDINARY_STORAGE['API_KEY']}:{CLOUDINARY_STORAGE['API_SECRET']}@{CLOUDINARY_STORAGE['CLOUD_NAME']}"
+
+# ============================================
+# MEDIA FILES - Now hosted on Cloudinary
+# ============================================
+MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_STORAGE["CLOUD_NAME"]}/'
 
 # ============================================
 # Default primary key field type
@@ -256,4 +266,4 @@ if not os.path.exists(BASE_DIR / 'logs'):
 if 'RENDER' in os.environ:
     print(f"🚀 Running on Render with DEBUG={DEBUG}", file=sys.stderr)
     print(f"🌐 Site URL: {BASE_URL}", file=sys.stderr)
-    print(f"📁 Media root: {MEDIA_ROOT}", file=sys.stderr)
+    print(f"☁️ Using Cloudinary for media storage", file=sys.stderr)

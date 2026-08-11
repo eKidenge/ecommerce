@@ -22,11 +22,19 @@ urlpatterns = [
 ]
 
 # ============================================
-# SERVE MEDIA FILES - CRITICAL FOR UPLOADED IMAGES
+# SERVE MEDIA FILES - CLOUDINARY
 # ============================================
-# Always serve media files (works for both development and production)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Since we're using Cloudinary, we don't need to serve media files locally
+# Cloudinary handles media delivery via their CDN
+# Only serve media files locally in development
 
-# Serve static files only in development (production uses Whitenoise)
 if settings.DEBUG:
+    # Local development - serve media files from local directory
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Serve static files locally in development
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+else:
+    # In production (Render), Cloudinary serves all media files
+    # No need to serve media files from Django
+    # Static files are served by Whitenoise
+    pass
