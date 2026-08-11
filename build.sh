@@ -71,6 +71,13 @@ else
 fi
 
 # ============================================
+# CREATE CACHE TABLE - FIX FOR THE ERROR
+# ============================================
+echo ""
+echo "🗄️  Creating cache table..."
+python manage.py createcachetable
+
+# ============================================
 # COLLECT STATIC FILES
 # ============================================
 echo ""
@@ -78,7 +85,7 @@ echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
 
 # ============================================
-# SEED DATABASE WITH DEMO DATA (Only for SQLite or fresh PostgreSQL)
+# SEED DATABASE WITH DEMO DATA
 # ============================================
 echo ""
 echo "🌱 Seeding database with demo data..."
@@ -92,7 +99,7 @@ else
 fi
 
 # ============================================
-# CREATE SUPERUSER - UPDATED FOR YOUR USER MODEL
+# CREATE SUPERUSER
 # ============================================
 echo ""
 echo "👤 Creating superuser..."
@@ -119,13 +126,12 @@ if not User.objects.filter(is_superuser=True).exists():
         password='Admin@123!',
         first_name='System',
         last_name='Administrator',
-        user_type='admin',          # From your USER_TYPES
+        user_type='admin',
         is_email_verified=True,
         is_active=True,
         is_blocked=False,
         is_banned=False
     )
-    # Create UserProfile for admin
     UserProfile.objects.get_or_create(user=admin)
     print("✅ Superuser created successfully!")
     print("   Username: admin")
@@ -135,7 +141,6 @@ if not User.objects.filter(is_superuser=True).exists():
 else:
     print("✅ Superuser already exists.")
     
-    # Ensure admin user has proper profile
     try:
         admin = User.objects.get(username='admin')
         UserProfile.objects.get_or_create(user=admin)
@@ -143,14 +148,7 @@ else:
     except User.DoesNotExist:
         pass
 
-# ============================================
-# CREATE ADDITIONAL DEMO USERS
-# ============================================
-print("\n" + "="*50)
-print("  CREATING DEMO USERS")
-print("="*50)
-
-# Create Vendor if not exists
+# Create Vendor
 if not User.objects.filter(username='vendor').exists():
     print("\nCreating Vendor...")
     vendor = User.objects.create_user(
@@ -171,9 +169,8 @@ if not User.objects.filter(username='vendor').exists():
     print("✅ Vendor created!")
     print("   Username: vendor")
     print("   Password: Vendor@123")
-    print("   Store Name: Vendor Store")
 
-# Create Customer if not exists
+# Create Customer
 if not User.objects.filter(username='customer').exists():
     print("\nCreating Customer...")
     customer = User.objects.create_user(
@@ -193,7 +190,7 @@ if not User.objects.filter(username='customer').exists():
     print("   Username: customer")
     print("   Password: Customer@123")
 
-# Create Moderator if not exists
+# Create Moderator
 if not User.objects.filter(username='moderator').exists():
     print("\nCreating Moderator...")
     moderator = User.objects.create_user(
@@ -213,7 +210,7 @@ if not User.objects.filter(username='moderator').exists():
     print("   Username: moderator")
     print("   Password: Moderator@123")
 
-# Create Staff Member if not exists (using customer type as staff)
+# Create Staff
 if not User.objects.filter(username='staff').exists():
     print("\nCreating Staff Member...")
     staff = User.objects.create_user(
@@ -233,16 +230,10 @@ if not User.objects.filter(username='staff').exists():
     print("   Username: staff")
     print("   Password: Staff@123")
 
-# ============================================
-# CREATE DEFAULT ADDRESS FOR USERS (Optional)
-# ============================================
-print("\n" + "="*50)
-print("  CREATING DEFAULT ADDRESSES")
-print("="*50)
-
+# Create default addresses
 from apps.accounts.models import Address
 
-# Add default address for admin
+# Admin address
 try:
     admin_user = User.objects.get(username='admin')
     if not Address.objects.filter(user=admin_user, is_default=True).exists():
@@ -263,7 +254,7 @@ try:
 except User.DoesNotExist:
     pass
 
-# Add default address for vendor
+# Vendor address
 try:
     vendor_user = User.objects.get(username='vendor')
     if not Address.objects.filter(user=vendor_user, is_default=True).exists():
@@ -284,7 +275,7 @@ try:
 except User.DoesNotExist:
     pass
 
-# Add default address for customer
+# Customer address
 try:
     customer_user = User.objects.get(username='customer')
     if not Address.objects.filter(user=customer_user, is_default=True).exists():
@@ -305,9 +296,6 @@ try:
 except User.DoesNotExist:
     pass
 
-# ============================================
-# SUMMARY
-# ============================================
 print("\n" + "="*50)
 print("  USER SUMMARY")
 print("="*50)
